@@ -1,0 +1,148 @@
+.footer {
+  padding: 50px 0 0 0;
+  color: var(--c-white);
+  background-color: var(--c-dark);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding-bottom: 36px;
+}
+
+.footer-brand {
+  max-width: 320px;
+}
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.footer-logo-svg {
+  color: var(--c-aqua-primary);
+}
+
+.footer-brand-text {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--c-white);
+}
+
+.footer-tagline {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-nav-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.footer-inline-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-inline-links a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-inline-links a:hover {
+  color: var(--c-aqua-primary);
+}
+
+.footer-separator {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.footer-bottom .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 32px 0 0 0;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding-bottom: 22px;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+  }
+
+  .footer-logo-wrap {
+    justify-content: center;
+    margin-bottom: 4px;
+    gap: 8px;
+  }
+
+  .footer-brand-text {
+    font-size: 22px;
+  }
+
+  .footer-tagline {
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+
+  .footer-nav-block {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-inline-links {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer-inline-links a {
+    font-size: 13.5px;
+  }
+
+  .footer-bottom {
+    padding: 12px 0;
+    font-size: 12px;
+  }
+
+  .footer-bottom .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+  }
+}
