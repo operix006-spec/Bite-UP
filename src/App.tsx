@@ -4,6 +4,7 @@ import { AdminProvider, useAdmin } from './context/AdminContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/cart/CartDrawer';
+import { Chatbot } from './components/chat/Chatbot';
 import { ScrollToTop } from './components/common/ScrollToTop';
 import { Home } from './pages/Home';
 import { Menu } from './pages/Menu';
@@ -29,6 +30,7 @@ function AppRoutes() {
       <div className="app-container">
         <Header />
         <CartDrawer />
+        <Chatbot />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
