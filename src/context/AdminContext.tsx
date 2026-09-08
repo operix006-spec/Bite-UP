@@ -26,17 +26,16 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [siteContent, setSiteContent] = useState<SiteContent>(defaultContent);
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [locations, setLocations] = useState<Location[]>(initialLocations);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const [prodRes, locRes, contentRes] = await Promise.all([
         supabase.from('products').select('*').order('orderIndex', { ascending: true }),
@@ -69,7 +68,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSiteContent(finalContent);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data from Supabase:', error);
+      // Resilient fallback ensures site never stays blank
+      setProducts(initialProducts);
+      setLocations(initialLocations);
+      setSiteContent(defaultContent);
     } finally {
       setLoading(false);
     }

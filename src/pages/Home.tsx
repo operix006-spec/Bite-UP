@@ -27,7 +27,7 @@ export const Home: React.FC = () => {
 
   // 05. Nutrition Spotlight State
   const nutritionProducts = products.filter(p => p.nutritionFeatured).slice(0, 6);
-  const defaultSelectedId = nutritionProducts.length > 0 ? nutritionProducts[0].id : products[0].id;
+  const defaultSelectedId = nutritionProducts.length > 0 ? nutritionProducts[0]?.id : products[0]?.id || '';
   const [selectedNutritionId, setSelectedNutritionId] = useState(defaultSelectedId);
   const selectedProduct = nutritionProducts.find(p => p.id === selectedNutritionId) || nutritionProducts[0] || products[0];
 
