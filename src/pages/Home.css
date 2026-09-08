@@ -3,6 +3,12 @@
    Editorial & Brand-Led Aesthetic
    =================================================== */
 
+/* ROOT CONTAINER */
+.home-page {
+  width: 100%;
+  overflow-x: clip;
+}
+
 /* SECTION BACKGROUND UTILITIES & PADDINGS */
 .bg-soft-aqua {
   background-color: var(--c-aqua-soft);
@@ -703,6 +709,8 @@
 .locations-preview-section {
   padding: 100px 0;
   border-top: 1px solid rgba(17, 20, 20, 0.05);
+  overflow-x: clip;
+  width: 100%;
 }
 
 .locations-preview-section.bg-aqua {
@@ -731,8 +739,10 @@
 
 .location-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .home-loc-card {
@@ -743,6 +753,10 @@
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .home-loc-card:hover {
@@ -755,6 +769,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .home-loc-area {
@@ -763,6 +779,9 @@
   font-weight: 800;
   letter-spacing: 0.5px;
   color: var(--c-aqua-dark);
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .home-loc-badge {
@@ -772,6 +791,8 @@
   color: #ffffff;
   padding: 2px 8px;
   border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .home-loc-name {
@@ -781,6 +802,9 @@
   color: var(--c-dark);
   margin-bottom: 14px;
   line-height: 1.25;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .home-loc-action {
@@ -794,6 +818,8 @@
   color: var(--c-dark);
   text-decoration: none;
   transition: color 0.2s ease;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .home-loc-action:hover {
@@ -939,6 +965,13 @@
 /* ===================================================
    RESPONSIVE DESIGN (DESKTOP / TABLET / MOBILE)
    =================================================== */
+@media (max-width: 1140px) {
+  .location-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
 @media (max-width: 1024px) {
   .hero-container {
     gap: 40px;
@@ -953,7 +986,8 @@
   }
 
   .location-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
 }
 
@@ -1061,6 +1095,21 @@
   .featured-product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
+  }
+
+  .location-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+  }
+
+  .home-loc-card {
+    padding: 14px 12px;
+  }
+
+  .home-loc-name {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
   }
 
   .card-details {
@@ -1288,17 +1337,40 @@
   }
 
   .location-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+    width: 100%;
   }
 
   .home-loc-card {
     padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .home-loc-top {
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .home-loc-area {
+    font-size: 0.6875rem;
+    letter-spacing: 0.2px;
+  }
+
+  .home-loc-badge {
+    font-size: 0.625rem;
+    padding: 1px 6px;
   }
 
   .home-loc-name {
     font-size: 0.875rem;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .home-loc-action {
+    font-size: 0.6875rem;
+    gap: 3px;
   }
 
   .instagram-card-wrapper {
@@ -1332,6 +1404,35 @@
   .spotlight-tab {
     font-size: 0.7rem;
     padding: 5px 2px;
+  }
+
+  .location-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .home-loc-card {
+    padding: 10px 6px;
+    border-radius: 10px;
+  }
+
+  .home-loc-area {
+    font-size: 0.625rem;
+  }
+
+  .home-loc-badge {
+    font-size: 0.5625rem;
+    padding: 1px 4px;
+  }
+
+  .home-loc-name {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .home-loc-action {
+    font-size: 0.625rem;
+    gap: 2px;
   }
 }
 
@@ -1497,19 +1598,6 @@
 }
 
 @media (max-width: 768px) {
-  .location-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-
-  .home-loc-card {
-    padding: 14px 12px;
-  }
-
-  .home-loc-name {
-    font-size: 0.95rem;
-  }
-
   .quick-view-dialog {
     width: 92%;
     max-width: 440px;

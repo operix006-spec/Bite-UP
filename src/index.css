@@ -173,7 +173,17 @@ img {
   padding: 100px 0;
 }
 @media (max-width: 768px) {
+  :root {
+    --container-padding: 16px;
+  }
   .section {
     padding: 64px 0;
   }
 }
+
+@media (max-width: 480px) {
+  :root {
+    --container-padding: 12px;
+  }
+}
+
