@@ -3,9 +3,10 @@ import { useAdmin } from '../context/AdminContext';
 import { ProductsManager } from '../components/admin/ProductsManager';
 import { HomeManager } from '../components/admin/HomeManager';
 import { AboutManager } from '../components/admin/AboutManager';
+import { ChatbotManager } from '../components/admin/ChatbotManager';
 import './Admin.css';
 
-type Tab = 'products' | 'home' | 'about';
+type Tab = 'products' | 'home' | 'about' | 'chatbot';
 
 export const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('products');
@@ -24,7 +25,7 @@ export const Admin: React.FC = () => {
         <header className="admin-header">
           <div>
             <h1>Control Panel</h1>
-            <p className="admin-subtitle">Manage Menu Products and Website Copy</p>
+            <p className="admin-subtitle">Manage Menu Products, Website Copy, and AI Assistant Training</p>
           </div>
           <div className="admin-actions-top">
             <button className="btn-danger" onClick={handleReset}>
@@ -52,12 +53,19 @@ export const Admin: React.FC = () => {
           >
             About Us Page Manager
           </button>
+          <button 
+            className={`admin-tab ${activeTab === 'chatbot' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chatbot')}
+          >
+            ✨ AI Assistant & Training
+          </button>
         </div>
 
         <div className="admin-content-area">
           {activeTab === 'products' && <ProductsManager />}
           {activeTab === 'home' && <HomeManager />}
           {activeTab === 'about' && <AboutManager />}
+          {activeTab === 'chatbot' && <ChatbotManager />}
         </div>
       </div>
     </div>

@@ -20,9 +20,30 @@ export const Chatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const { products } = useAdmin();
+  const { siteContent, products } = useAdmin();
+
+  // If chatbot is disabled by admin, don't render on live site
+  if (siteContent.chatbotEnabled === 'false') {
+    return null;
+  }
 
   const availableProducts = products && products.length > 0 ? products : fallbackProducts;
+
+  const assistantName = siteContent.chatbotAssistantName || 'BITE UP Assistant';
+  const welcomeHeading = siteContent.chatbotWelcomeHeading || 'Hi! 👋';
+  const welcomeSubtext = siteContent.chatbotWelcomeSubtext || 'What can I help you find today?';
+
+  // Dynamic quick suggestions configured in admin
+  const suggestions: QuickSuggestion[] = React.useMemo(() => {
+    try {
+      if (siteContent.chatbotQuickSuggestions) {
+        return JSON.parse(siteContent.chatbotQuickSuggestions);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return DEFAULT_SUGGESTIONS;
+  }, [siteContent.chatbotQuickSuggestions]);
 
   // Prevent background scroll on mobile when chat is open
   useEffect(() => {
@@ -38,10 +59,67 @@ export const Chatbot: React.FC = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  // Helper to generate simulated assistant responses
-  const generateMockReply = (userText: string) => {
+  // Helper to generate assistant response (Real API with fallback to intelligent local engine)
+  const generateReply = async (userText: string) => {
     setIsTyping(true);
 
+    // 1. Try real API if an API key is configured
+    if (siteContent.chatbotApiKey && siteContent.chatbotApiKey.trim().length > 10) {
+      try {
+        const endpoint = siteContent.chatbotApiUrl || 'https://api.openai.com/v1/chat/completions';
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${siteContent.chatbotApiKey.trim()}`
+          },
+          body: JSON.stringify({
+            model: siteContent.chatbotModel || 'gpt-4o-mini',
+            temperature: parseFloat(siteContent.chatbotTemperature || '0.7'),
+            max_tokens: parseInt(siteContent.chatbotMaxTokens || '500'),
+            messages: [
+              {
+                role: 'system',
+                content: `${siteContent.chatbotSystemPrompt || ''}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || ''}`
+              },
+              ...messages.slice(-6).map((m) => ({
+                role: m.sender === 'user' ? 'user' : 'assistant',
+                content: m.text || ''
+              })),
+              { role: 'user', content: userText }
+            ]
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const replyContent = data.choices?.[0]?.message?.content;
+          if (replyContent) {
+            // Find if response specifically mentions a product to attach its interactive card
+            const matchedProduct = availableProducts.find((p) =>
+              replyContent.toLowerCase().includes(p.name.toLowerCase())
+            );
+
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: 'asst-' + Date.now(),
+                sender: 'assistant',
+                text: replyContent,
+                timestamp: new Date(),
+                product: matchedProduct
+              }
+            ]);
+            setIsTyping(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Real AI API call encountered an issue, running local training engine fallback:', err);
+      }
+    }
+
+    // 2. Intelligent local engine utilizing training prompts and active products
     setTimeout(() => {
       setIsTyping(false);
       const lower = userText.toLowerCase();
@@ -103,7 +181,7 @@ export const Chatbot: React.FC = () => {
       timestamp: new Date()
     };
     setMessages((prev) => [...prev, userMsg]);
-    generateMockReply(text);
+    generateReply(text);
   };
 
   const handleSelectSuggestion = (sug: QuickSuggestion) => {
@@ -111,9 +189,8 @@ export const Chatbot: React.FC = () => {
   };
 
   const handleRetry = () => {
-    // Remove last error message and retry
     setMessages((prev) => prev.filter((m) => !m.isError));
-    generateMockReply('help me choose');
+    generateReply('help me choose');
   };
 
   return (
@@ -137,14 +214,16 @@ export const Chatbot: React.FC = () => {
         aria-modal="true"
         aria-label="BITE UP Assistant Chat"
       >
-        <ChatHeader onClose={handleClose} />
+        <ChatHeader onClose={handleClose} title={assistantName} />
         
         <ChatMessageList
           messages={messages}
           isTyping={isTyping}
-          suggestions={DEFAULT_SUGGESTIONS}
+          suggestions={suggestions}
           onSelectSuggestion={handleSelectSuggestion}
           onRetry={handleRetry}
+          welcomeHeading={welcomeHeading}
+          welcomeSubtext={welcomeSubtext}
         />
 
         <ChatInput 

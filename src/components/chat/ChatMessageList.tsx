@@ -11,6 +11,8 @@ interface ChatMessageListProps {
   onSelectSuggestion: (suggestion: QuickSuggestion) => void;
   onRetry: () => void;
   onViewProduct?: (product: Product) => void;
+  welcomeHeading?: string;
+  welcomeSubtext?: string;
 }
 
 export const ChatMessageList: React.FC<ChatMessageListProps> = ({
@@ -19,7 +21,9 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
   suggestions,
   onSelectSuggestion,
   onRetry,
-  onViewProduct
+  onViewProduct,
+  welcomeHeading = 'Hi! 👋',
+  welcomeSubtext = 'What can I help you find today?'
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -41,8 +45,8 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
         <div className="chat-welcome-avatar">
           <Sparkles size={20} />
         </div>
-        <h4 className="chat-welcome-heading">Hi! 👋</h4>
-        <p className="chat-welcome-sub">What can I help you find today?</p>
+        <h4 className="chat-welcome-heading">{welcomeHeading}</h4>
+        <p className="chat-welcome-sub">{welcomeSubtext}</p>
 
         {/* QUICK SUGGESTIONS */}
         <div className="chat-suggestions-wrap">

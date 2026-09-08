@@ -4,9 +4,10 @@ import { Logo } from '../common/Logo';
 
 interface ChatHeaderProps {
   onClose: () => void;
+  title?: string;
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({ onClose }) => {
+export const ChatHeader: React.FC<ChatHeaderProps> = ({ onClose, title = 'BITE UP Assistant' }) => {
   return (
     <header className="chat-header">
       <div className="chat-header-brand">
@@ -16,7 +17,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onClose }) => {
         </div>
         <div className="chat-header-info">
           <div className="chat-header-title-row">
-            <h3 className="chat-header-title">BITE UP Assistant</h3>
+            <h3 className="chat-header-title">{title}</h3>
             <span className="chat-header-badge">
               <Sparkles size={11} className="chat-badge-icon" />
               <span>AI</span>

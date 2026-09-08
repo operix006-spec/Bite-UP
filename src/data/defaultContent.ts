@@ -69,6 +69,21 @@ export interface SiteContent {
   aboutRetailEyebrow: string;
   aboutRetailHeadline: string;
   aboutRetailSubtitle: string;
+
+  // --- CHATBOT & AI TRAINING ---
+  chatbotEnabled?: string;
+  chatbotAssistantName?: string;
+  chatbotWelcomeHeading?: string;
+  chatbotWelcomeSubtext?: string;
+  chatbotApiProvider?: string;
+  chatbotApiKey?: string;
+  chatbotModel?: string;
+  chatbotApiUrl?: string;
+  chatbotTemperature?: string;
+  chatbotMaxTokens?: string;
+  chatbotSystemPrompt?: string;
+  chatbotKnowledgeBase?: string;
+  chatbotQuickSuggestions?: string;
 }
 
 export const defaultContent: SiteContent = {
@@ -141,4 +156,53 @@ export const defaultContent: SiteContent = {
   aboutRetailEyebrow: "RETAIL LOCATIONS",
   aboutRetailHeadline: "FIND BITE UP IN AMMAN",
   aboutRetailSubtitle: "Available at your favorite neighborhood supermarkets and specialty coffee spots across Amman.",
+
+  // --- CHATBOT & AI TRAINING ---
+  chatbotEnabled: "true",
+  chatbotAssistantName: "BITE UP Assistant",
+  chatbotWelcomeHeading: "Hi! 👋",
+  chatbotWelcomeSubtext: "What can I help you find today?",
+  chatbotApiProvider: "openai",
+  chatbotApiKey: "",
+  chatbotModel: "gpt-4o-mini",
+  chatbotApiUrl: "",
+  chatbotTemperature: "0.7",
+  chatbotMaxTokens: "500",
+  chatbotSystemPrompt: `You are the friendly, energetic, and knowledgeable AI assistant for BITE UP — a premium protein desserts and snacks brand based in Amman, Jordan.
+
+BRAND VOICE & PERSONALITY:
+- Warm, motivating, health-conscious, and dessert-loving.
+- Speak in concise, clear, and appetizing sentences.
+- You speak fluent English and Arabic (respond in the language the user asks in).
+- Emphasize that healthy food does not mean giving up on taste or indulgence.
+
+CORE RULES:
+1. Recommend BITE UP products based on customer fitness goals (muscle gain, weight loss, sweet tooth without sugar crash).
+2. All puddings contain 18g of premium whey isolate protein and ZERO refined sugar.
+3. Mention that products must be refrigerated and consumed fresh within 5 days.
+4. If asked about branches, mention key Amman areas like Marj Al Hamam, Sweileh, Al Jubeiha, and Khalda.
+5. If someone wants to buy, guide them to add to cart on the website or order via WhatsApp.`,
+  chatbotKnowledgeBase: `PRODUCT LINEUP & DETAILS:
+- Pudding Brownie: 345 kcal, 18g Protein, 27g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Rich Belgian cocoa taste.
+- Pudding Cookies: 345 kcal, 18g Protein, 27g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Vanilla cookie creaminess.
+- Pudding Bounty: 245 kcal, 18g Protein, 17g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Refreshing coconut & chocolate layer.
+- Granola Nuts: Crunchy wholesome oat cluster with roasted nuts. Clean slow-release energy.
+- Granola Pineapple: Tropical crunch with dried pineapple pieces.
+
+FREQUENTLY ASKED QUESTIONS:
+Q: Is there any added sugar?
+A: Absolutely zero refined or added sugars. Naturally sweetened.
+Q: What is the protein source?
+A: High-grade pure Whey Protein Isolate.
+Q: How long does it last?
+A: Keep refrigerated between 2°C - 4°C. Best consumed within 5 days from production.
+Q: Do you deliver?
+A: Yes! You can build your cart right here on the website and submit your order directly to our WhatsApp dispatch team.`,
+  chatbotQuickSuggestions: JSON.stringify([
+    { id: 's1', label: 'What should I try?', prompt: 'What should I try?' },
+    { id: 's2', label: 'Show me high-protein options', prompt: 'Show me high-protein options' },
+    { id: 's3', label: 'How many calories?', prompt: 'How many calories are in BITE UP cups?' },
+    { id: 's4', label: 'Where can I find BITE UP?', prompt: 'Where can I find BITE UP in Amman?' },
+    { id: 's5', label: 'Help me choose', prompt: 'Help me choose based on my fitness goals' }
+  ]),
 };
