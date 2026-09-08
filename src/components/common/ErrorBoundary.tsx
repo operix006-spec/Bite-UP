@@ -57,53 +57,22 @@ export class ErrorBoundary extends Component<Props, State> {
           <p style={{ color: 'rgba(17, 20, 20, 0.7)', maxWidth: '420px', marginBottom: '24px', lineHeight: 1.5, fontSize: '0.95rem' }}>
             Something went wrong while loading. Please refresh to try again.
           </p>
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                backgroundColor: '#65B7BB',
-                color: '#ffffff',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '12px',
-                fontWeight: 800,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(101, 183, 187, 0.4)'
-              }}
-            >
-              RELOAD WEBSITE
-            </button>
-            <button
-              onClick={() => {
-                try {
-                  localStorage.clear();
-                  sessionStorage.clear();
-                } catch {}
-                window.location.reload();
-              }}
-              style={{
-                backgroundColor: '#111414',
-                color: '#ffffff',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '12px',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                cursor: 'pointer'
-              }}
-            >
-              RESET CACHE & RELOAD
-            </button>
-          </div>
-          {this.state.error?.message && (
-            <details style={{ marginTop: '20px', maxWidth: '420px', textAlign: 'left', fontSize: '0.78rem', color: 'rgba(17, 20, 20, 0.6)' }}>
-              <summary style={{ cursor: 'pointer', textAlign: 'center' }}>Technical Details</summary>
-              <pre style={{ marginTop: '8px', padding: '10px', background: '#eef4f4', borderRadius: '8px', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>
-                {this.state.error.message}
-              </pre>
-            </details>
-          )}
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              backgroundColor: '#65B7BB',
+              color: '#ffffff',
+              border: 'none',
+              padding: '12px 28px',
+              borderRadius: '12px',
+              fontWeight: 800,
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(101, 183, 187, 0.4)'
+            }}
+          >
+            RELOAD WEBSITE
+          </button>
         </div>
       );
     }
