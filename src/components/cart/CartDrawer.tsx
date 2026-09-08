@@ -49,7 +49,7 @@ export const CartDrawer: React.FC = () => {
                           <X size={16} />
                         </button>
                       </div>
-                      <div className="cart-item-price">{item.product.price.toFixed(2)} JD</div>
+                      <div className="cart-item-price">{(Number(item.product.price) || 0).toFixed(2)} JD</div>
                       <div className="cart-item-controls">
                         <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)}>
                           <Minus size={16} />
@@ -77,7 +77,7 @@ export const CartDrawer: React.FC = () => {
                 
                 <div className="cart-total-row">
                   <span>TOTAL</span>
-                  <span>{cartTotal.toFixed(2)} JD</span>
+                  <span>{(Number(cartTotal) || 0).toFixed(2)} JD</span>
                 </div>
 
                 <button className="btn btn-primary w-full order-btn" onClick={handleOrder}>

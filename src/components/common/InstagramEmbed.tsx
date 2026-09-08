@@ -8,6 +8,10 @@ interface InstagramEmbedProps {
 export const InstagramEmbed = ({ postUrl, maxWidth = 480 }: InstagramEmbedProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  if (!postUrl || typeof postUrl !== 'string' || !postUrl.trim()) {
+    return null;
+  }
+
   // Clean and normalize permalink for Instagram Embed API
   const cleanUrl = postUrl.trim().split('?')[0].replace(/\/+$/, '') + '/';
 

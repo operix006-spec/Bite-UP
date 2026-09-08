@@ -46,7 +46,7 @@ export const ChatProductCard: React.FC<ChatProductCardProps> = ({ product, onVie
       <div className="chat-product-body">
         <div className="chat-product-header-row">
           <h4 className="chat-product-title">{product.name}</h4>
-          <span className="chat-product-price">{product.price.toFixed(2)} JD</span>
+          <span className="chat-product-price">{(Number(product.price) || 0).toFixed(2)} JD</span>
         </div>
 
         <div className="chat-product-macros">

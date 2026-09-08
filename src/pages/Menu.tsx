@@ -111,7 +111,7 @@ export const Menu: React.FC = () => {
                 </div>
 
                 <div className="product-card-footer">
-                  <span className="product-price">{product.price.toFixed(2)} JD</span>
+                  <span className="product-price">{(Number(product.price) || 0).toFixed(2)} JD</span>
                   <button 
                     className={`btn-quick-add ${addedId === product.id ? 'added' : ''}`}
                     onClick={(e) => handleQuickAdd(e, product)}
@@ -129,7 +129,7 @@ export const Menu: React.FC = () => {
       {/* STICKY BOTTOM CART BAR (Mobile only) */}
       {isMobile && itemCount > 0 && !isCartOpen && (
         <div className="mobile-cart-bar" onClick={openCart}>
-          <span>{itemCount} items • {cartTotal.toFixed(2)} JD</span>
+          <span>{itemCount} items • {(Number(cartTotal) || 0).toFixed(2)} JD</span>
           <span className="view-cart-text">VIEW CART →</span>
         </div>
       )}
@@ -147,9 +147,9 @@ export const Menu: React.FC = () => {
                 <img src={selectedProduct.image} alt={selectedProduct.name} />
               </div>
               <div className="modal-details">
-                <span className="modal-eyebrow">{selectedProduct.category.toUpperCase()}</span>
+                <span className="modal-eyebrow">{(selectedProduct.category || '').toUpperCase()}</span>
                 <h2 className="modal-title">{selectedProduct.name}</h2>
-                <div className="modal-price">{selectedProduct.price.toFixed(2)} JD</div>
+                <div className="modal-price">{(Number(selectedProduct.price) || 0).toFixed(2)} JD</div>
                 
                 <div className="modal-nutrition-grid">
                   <div className="mn-box">
@@ -196,7 +196,7 @@ export const Menu: React.FC = () => {
                     </button>
                   </div>
                   <button className={`btn btn-primary add-modal-btn ${modalAdded ? 'added' : ''}`} onClick={handleAddToCartModal}>
-                    {modalAdded ? 'ADDED ✓' : `ADD TO CART • ${(selectedProduct.price * modalQuantity).toFixed(2)} JD`}
+                    {modalAdded ? 'ADDED ✓' : `ADD TO CART • ${((Number(selectedProduct.price) || 0) * modalQuantity).toFixed(2)} JD`}
                   </button>
                 </div>
               </div>

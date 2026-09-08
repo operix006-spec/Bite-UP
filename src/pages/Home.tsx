@@ -13,9 +13,9 @@ export const Home: React.FC = () => {
 
   // 02. Featured Products: exactly 4 items
   const featuredIds = ['p-brownie', 'p-cookies', 'p-bounty', 'p-lotus'];
-  const featuredProducts = products.filter(p => featuredIds.includes(p.id));
+  const matchedFeatured = products.filter(p => featuredIds.includes(p.id));
+  const featuredProducts = matchedFeatured.length > 0 ? matchedFeatured : products.slice(0, 4);
 
-  // Quick View Modal State
   // Quick View Modal State
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [quickViewQty, setQuickViewQty] = useState(1);
@@ -27,7 +27,7 @@ export const Home: React.FC = () => {
 
   // 05. Nutrition Spotlight State
   const nutritionProducts = products.filter(p => p.nutritionFeatured).slice(0, 6);
-  const defaultSelectedId = nutritionProducts.length > 0 ? nutritionProducts[0]?.id : products[0]?.id || '';
+  const defaultSelectedId = nutritionProducts.length > 0 ? nutritionProducts[0]?.id : (products[0]?.id || '');
   const [selectedNutritionId, setSelectedNutritionId] = useState(defaultSelectedId);
   const selectedProduct = nutritionProducts.find(p => p.id === selectedNutritionId) || nutritionProducts[0] || products[0];
 
@@ -63,7 +63,7 @@ export const Home: React.FC = () => {
         <div className="container hero-container">
           <div className="hero-content">
             <h1 className="hero-headline">
-              {siteContent.homeHeroHeadline.split('\n').map((line, i, arr) => (
+              {(siteContent?.homeHeroHeadline || '').split('\n').map((line, i, arr) => (
                 <React.Fragment key={i}>
                   {i === arr.length - 1 ? <span className="hero-accent">{line}</span> : line}
                   {i < arr.length - 1 && <br />}
@@ -71,7 +71,7 @@ export const Home: React.FC = () => {
               ))}
             </h1>
             <p className="hero-subtext">
-              {siteContent.homeHeroSubtext}
+              {siteContent?.homeHeroSubtext || ''}
             </p>
             <div className="hero-actions">
               <Link to="/menu" className="btn btn-primary">
@@ -134,7 +134,7 @@ export const Home: React.FC = () => {
                   </div>
 
                   <div className="card-footer-action">
-                    <span className="card-price">{product.price.toFixed(2)} JD</span>
+                    <span className="card-price">{(Number(product?.price) || 0).toFixed(2)} JD</span>
                     <button
                       className={`card-quick-add ${addedId === product.id ? 'added' : ''}`}
                       onClick={(e) => handleCardAdd(e, product)}
@@ -177,7 +177,7 @@ export const Home: React.FC = () => {
             {previewLocations.map((loc) => (
               <div className="home-loc-card" key={loc.id}>
                 <div className="home-loc-top">
-                  <span className="home-loc-area">{loc.area.toUpperCase()}</span>
+                  <span className="home-loc-area">{(loc.area || '').toUpperCase()}</span>
                   <span className="home-loc-badge">
                     {loc.category === 'coffee-spot' ? 'Coffee' : 'Supermarket'}
                   </span>
@@ -206,14 +206,14 @@ export const Home: React.FC = () => {
       </section>
 
       {/* ===================================================
-         04 — WHY BITE UP: Brand Commitment & Values
+         04 — WHY BITE UP: Honest Nutrition Values
          =================================================== */}
       <section className="values-section bg-off-white">
         <div className="container">
           <div className="values-header">
             <span className="section-eyebrow">{siteContent.homeWhyEyebrow}</span>
             <h2 className="manifesto-title">
-              {siteContent.homeWhyHeadline.split('\n').map((line, i, arr) => (
+              {(siteContent?.homeWhyHeadline || '').split('\n').map((line, i, arr) => (
                 <React.Fragment key={i}>
                   {line}
                   {i < arr.length - 1 && <br />}
@@ -283,11 +283,11 @@ export const Home: React.FC = () => {
             {/* PRODUCT PHOTO SIDE */}
             <div className="spotlight-photo-column">
               <div className="spotlight-photo-frame">
-                <img src={selectedProduct.image} alt={selectedProduct.name} />
+                <img src={selectedProduct?.image || '/images/products/pudding-brownie.png'} alt={selectedProduct?.name || 'Protein Pudding'} />
               </div>
               <div className="spotlight-product-caption">
-                <h4>{selectedProduct.name}</h4>
-                <span className="caption-price">{selectedProduct.price.toFixed(2)} JD</span>
+                <h4>{selectedProduct?.name || 'Protein Pudding'}</h4>
+                <span className="caption-price">{(Number(selectedProduct?.price) || 0).toFixed(2)} JD</span>
               </div>
             </div>
 
@@ -431,9 +431,9 @@ export const Home: React.FC = () => {
               </div>
 
               <div className="quick-view-details">
-                <span className="quick-view-category">{quickViewProduct.category.toUpperCase()}</span>
+                <span className="quick-view-category">{(quickViewProduct.category || '').toUpperCase()}</span>
                 <h2 className="quick-view-title">{quickViewProduct.name}</h2>
-                <div className="quick-view-price">{quickViewProduct.price.toFixed(2)} JD</div>
+                <div className="quick-view-price">{(Number(quickViewProduct.price) || 0).toFixed(2)} JD</div>
 
                 <div className="quick-view-macro-grid">
                   <div className="qv-stat-tile">
@@ -479,7 +479,7 @@ export const Home: React.FC = () => {
                     className={`btn btn-primary qv-add-btn ${quickViewAdded ? 'added' : ''}`}
                     onClick={handleQuickViewAddToCart}
                   >
-                    {quickViewAdded ? 'ADDED ✓' : `ADD TO CART • ${(quickViewProduct.price * quickViewQty).toFixed(2)} JD`}
+                    {quickViewAdded ? 'ADDED ✓' : `ADD TO CART • ${((Number(quickViewProduct.price) || 0) * quickViewQty).toFixed(2)} JD`}
                   </button>
                 </div>
 

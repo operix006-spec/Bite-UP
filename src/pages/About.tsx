@@ -51,7 +51,7 @@ export const About: React.FC = () => {
           <div className="about-hero-content">
             <span className="section-eyebrow">{siteContent.aboutHeroEyebrow}</span>
             <h1 className="about-hero-headline">
-              {siteContent.aboutHeroHeadline.split('\n').map((line, i, arr) => (
+              {(siteContent?.aboutHeroHeadline || '').split('\n').map((line, i, arr) => (
                 <React.Fragment key={i}>
                   {i === arr.length - 1 ? <span className="text-aqua-dark">{line}</span> : line}
                   {i < arr.length - 1 && <br />}
@@ -179,7 +179,7 @@ export const About: React.FC = () => {
                       <div className="area-pin-circle">
                         <MapPin size={18} className="area-pin-icon" />
                       </div>
-                      <h3 className="area-name">{areaName.toUpperCase()}</h3>
+                      <h3 className="area-name">{(areaName || '').toUpperCase()}</h3>
                     </div>
 
                     <div className="area-header-actions">

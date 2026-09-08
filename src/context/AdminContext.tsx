@@ -131,9 +131,38 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // Initialize Supabase with defaults if completely empty
         await initializeDefaults();
       } else {
-        setProducts(finalProducts as Product[]);
-        setLocations(finalLocations as Location[]);
-        setSiteContent(finalContent);
+        // NORMALIZE & SANITIZE PRODUCTS: guarantees prices are numbers and images exist
+        const safeProducts = (finalProducts.length > 0 ? finalProducts : initialProducts).map((p: any, i: number) => ({
+          ...p,
+          price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+          calories: p.calories ? Number(p.calories) : null,
+          protein: p.protein ? Number(p.protein) : null,
+          carbs: p.carbs ? Number(p.carbs) : null,
+          fat: p.fat ? Number(p.fat) : null,
+          image: p.image || initialProducts[i % initialProducts.length]?.image || '/images/products/pudding-brownie.png'
+        }));
+
+        // NORMALIZE LOCATIONS
+        const safeLocations = (finalLocations.length > 0 ? finalLocations : initialLocations).map((l: any) => ({
+          ...l,
+          name: l.name || '',
+          area: l.area || '',
+          city: l.city || 'Amman',
+          category: l.category || 'supermarket'
+        }));
+
+        // NORMALIZE CONTENT: guarantee every single field has a fallback to defaultContent
+        const safeContent = { ...defaultContent, ...finalContent };
+        Object.keys(defaultContent).forEach(k => {
+          const key = k as keyof SiteContent;
+          if (!safeContent[key] || typeof safeContent[key] !== 'string') {
+            (safeContent as any)[key] = (defaultContent as any)[key] || '';
+          }
+        });
+
+        setProducts(safeProducts as Product[]);
+        setLocations(safeLocations as Location[]);
+        setSiteContent(safeContent);
       }
     } catch (error) {
       console.error('Error fetching data from Supabase:', error);
