@@ -17,9 +17,37 @@ function AppRoutes() {
 
   if (loading) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid var(--c-aqua-dark)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F8FBFA',
+        gap: '16px'
+      }}>
+        <div style={{
+          width: '54px',
+          height: '54px',
+          borderRadius: '16px',
+          backgroundColor: '#111414',
+          border: '2px solid #65B7BB',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 8px 24px rgba(101, 183, 187, 0.25)'
+        }}>
+          <span style={{ color: '#ffffff', fontWeight: 900, fontSize: '1.1rem', letterSpacing: '-0.5px' }}>UP</span>
+        </div>
+        <div style={{
+          width: '28px',
+          height: '28px',
+          border: '3px solid rgba(101, 183, 187, 0.2)',
+          borderTop: '3px solid var(--c-aqua-dark, #357F83)',
+          borderRadius: '50%',
+          animation: 'biteupSpin 0.8s linear infinite'
+        }}></div>
+        <style>{`@keyframes biteupSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }

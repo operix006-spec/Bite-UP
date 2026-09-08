@@ -23,16 +23,84 @@ interface AdminContextType {
   resetToDefaults: () => Promise<void>;
 }
 
+const CACHE_KEYS = {
+  products: 'biteup_products_cache_v2',
+  content: 'biteup_content_cache_v2',
+  locations: 'biteup_locations_cache_v2'
+};
+
+const getCached = <T,>(key: string, fallback: T): { data: T; hasCache: boolean } => {
+  try {
+    const item = localStorage.getItem(key);
+    if (item) {
+      const parsed = JSON.parse(item);
+      if (parsed) return { data: parsed, hasCache: true };
+    }
+  } catch {
+    // Ignore storage parse errors
+  }
+  return { data: fallback, hasCache: false };
+};
+
+const saveCached = (key: string, data: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch {
+    // Ignore storage errors
+  }
+};
+
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [siteContent, setSiteContent] = useState<SiteContent>(defaultContent);
-  const [locations, setLocations] = useState<Location[]>(initialLocations);
-  const [loading, setLoading] = useState(false);
+  // 1. Initialize directly from browser cache (contains yesterday's edits) or initial defaults
+  const cachedProds = getCached<Product[]>(CACHE_KEYS.products, initialProducts);
+  const cachedContent = getCached<SiteContent>(CACHE_KEYS.content, defaultContent);
+  const cachedLocs = getCached<Location[]>(CACHE_KEYS.locations, initialLocations);
+
+  const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
+
+  const [products, setProductsState] = useState<Product[]>(cachedProds.data);
+  const [siteContent, setSiteContentState] = useState<SiteContent>(cachedContent.data);
+  const [locations, setLocationsState] = useState<Location[]>(cachedLocs.data);
+  // If we already have cached edits, show them instantly (loading = false).
+  // If first visit without cache, show brief loading until Supabase completes (loading = true).
+  const [loading, setLoading] = useState(!hasCachedData);
+
+  // Synchronized state setters that persist to localStorage
+  const setProducts: React.Dispatch<React.SetStateAction<Product[]>> = (val) => {
+    setProductsState(prev => {
+      const next = typeof val === 'function' ? (val as (p: Product[]) => Product[])(prev) : val;
+      saveCached(CACHE_KEYS.products, next);
+      return next;
+    });
+  };
+
+  const setLocations: React.Dispatch<React.SetStateAction<Location[]>> = (val) => {
+    setLocationsState(prev => {
+      const next = typeof val === 'function' ? (val as (l: Location[]) => Location[])(prev) : val;
+      saveCached(CACHE_KEYS.locations, next);
+      return next;
+    });
+  };
+
+  const setSiteContent: React.Dispatch<React.SetStateAction<SiteContent>> = (val) => {
+    setSiteContentState(prev => {
+      const next = typeof val === 'function' ? (val as (c: SiteContent) => SiteContent)(prev) : val;
+      saveCached(CACHE_KEYS.content, next);
+      return next;
+    });
+  };
 
   useEffect(() => {
+    // Safety timeout: never hang on loading longer than 2.5 seconds under any network condition
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+
     fetchData();
+
+    return () => clearTimeout(timeout);
   }, []);
 
   const fetchData = async () => {
@@ -69,10 +137,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } catch (error) {
       console.error('Error fetching data from Supabase:', error);
-      // Resilient fallback ensures site never stays blank
-      setProducts(initialProducts);
-      setLocations(initialLocations);
-      setSiteContent(defaultContent);
+      if (!hasCachedData) {
+        setProducts(initialProducts);
+        setLocations(initialLocations);
+        setSiteContent(defaultContent);
+      }
     } finally {
       setLoading(false);
     }
@@ -209,6 +278,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const resetToDefaults = async () => {
     try {
       setLoading(true);
+      localStorage.removeItem(CACHE_KEYS.products);
+      localStorage.removeItem(CACHE_KEYS.locations);
+      localStorage.removeItem(CACHE_KEYS.content);
+
       await supabase.from('products').delete().neq('id', 'temp_invalid_id');
       await supabase.from('locations').delete().neq('id', 'temp_invalid_id');
       await supabase.from('site_content').delete().neq('key', 'temp_invalid_id');
