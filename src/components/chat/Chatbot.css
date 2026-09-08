@@ -829,25 +829,46 @@
 
 /* MOBILE VIEW (<= 768px) */
 @media (max-width: 768px) {
-  /* Elevate floating launcher above mobile sticky cart when cart has items */
+  /* Floating launcher in bottom-right corner */
   .chat-launcher-container {
-    bottom: 20px;
-    right: 18px;
+    bottom: 14px;
+    right: 14px;
   }
 
   .chat-launcher-container.with-mobile-cart {
-    bottom: 96px; /* Sits cleanly above .mobile-cart-bar which is at bottom: 24px */
+    bottom: 84px; /* Sits cleanly above .mobile-cart-bar which is at bottom: 24px */
     transition: bottom 0.3s ease;
   }
 
-  /* Compact button on mobile */
+  /* Compact button on mobile while strictly preserving its sleek pill shape and brand identity */
   .chat-launcher-btn {
-    padding: 11px 16px;
-    gap: 8px;
+    padding: 7px 12px;
+    gap: 6px;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(101, 183, 187, 0.35), 0 2px 5px rgba(17, 20, 20, 0.08);
+  }
+
+  .chat-launcher-icon-wrap {
+    width: 18px;
+    height: 18px;
+  }
+
+  .chat-launcher-icon-wrap .icon-chat {
+    width: 16px;
+    height: 16px;
+  }
+
+  .chat-launcher-icon-wrap .icon-sparkle {
+    width: 10px;
+    height: 10px;
+    top: -3px;
+    right: -3px;
   }
 
   .chat-launcher-label {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
   }
 
   .chat-launcher-tooltip {
