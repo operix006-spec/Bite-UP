@@ -194,7 +194,7 @@
   }
 
   .footer-bottom {
-    padding: 12px 0 28px 0; /* subtle bottom clearance to prevent overlap with floating corner widgets */
+    padding: 14px 0;
     font-size: 12px;
   }
 

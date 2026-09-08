@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, MessageSquare } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
@@ -10,6 +10,22 @@ interface ChatLauncherProps {
 export const ChatLauncher: React.FC<ChatLauncherProps> = ({ isOpen, onClick }) => {
   const { itemCount } = useCart();
   const [isHovered, setIsHovered] = useState(false);
+  const [isNearFooter, setIsNearFooter] = useState(false);
+
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsNearFooter(entry.isIntersecting);
+      },
+      { threshold: 0.08 }
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
 
   // If chat is open on mobile or desktop, hide the floating button so it doesn't obstruct
   if (isOpen) return null;
@@ -20,7 +36,7 @@ export const ChatLauncher: React.FC<ChatLauncherProps> = ({ isOpen, onClick }) =
 
   return (
     <div 
-      className={`chat-launcher-container ${hasCartBar ? 'with-mobile-cart' : ''}`}
+      className={`chat-launcher-container ${hasCartBar ? 'with-mobile-cart' : ''} ${isNearFooter ? 'near-footer' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -829,46 +829,56 @@
 
 /* MOBILE VIEW (<= 768px) */
 @media (max-width: 768px) {
-  /* Floating launcher in bottom-right corner */
+  /* Floating launcher in bottom-right corner with smooth elevation */
   .chat-launcher-container {
-    bottom: 14px;
-    right: 14px;
+    bottom: 20px;
+    right: 18px;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.3s ease;
   }
 
+  /* When reaching footer, gracefully elevate the launcher so it never covers footer or Operix credit */
+  .chat-launcher-container.near-footer {
+    transform: translateY(-58px);
+  }
+
+  /* Elevate floating launcher above mobile sticky cart when cart has items */
   .chat-launcher-container.with-mobile-cart {
-    bottom: 84px; /* Sits cleanly above .mobile-cart-bar which is at bottom: 24px */
-    transition: bottom 0.3s ease;
+    bottom: 96px;
+    transition: bottom 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Compact button on mobile while strictly preserving its sleek pill shape and brand identity */
+  .chat-launcher-container.with-mobile-cart.near-footer {
+    transform: translateY(-24px);
+  }
+
+  /* Full original button size restored */
   .chat-launcher-btn {
-    padding: 7px 12px;
-    gap: 6px;
+    padding: 11px 16px;
+    gap: 8px;
     border-radius: 999px;
-    box-shadow: 0 4px 14px rgba(101, 183, 187, 0.35), 0 2px 5px rgba(17, 20, 20, 0.08);
+    box-shadow: 0 8px 24px rgba(101, 183, 187, 0.38), 0 2px 6px rgba(17, 20, 20, 0.08);
   }
 
   .chat-launcher-icon-wrap {
+    width: 22px;
+    height: 22px;
+  }
+
+  .chat-launcher-icon-wrap .icon-chat {
     width: 18px;
     height: 18px;
   }
 
-  .chat-launcher-icon-wrap .icon-chat {
-    width: 16px;
-    height: 16px;
-  }
-
   .chat-launcher-icon-wrap .icon-sparkle {
-    width: 10px;
-    height: 10px;
-    top: -3px;
-    right: -3px;
+    width: 12px;
+    height: 12px;
+    top: -4px;
+    right: -4px;
   }
 
   .chat-launcher-label {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    letter-spacing: 0.2px;
   }
 
   .chat-launcher-tooltip {
