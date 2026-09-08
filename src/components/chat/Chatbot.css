@@ -829,26 +829,16 @@
 
 /* MOBILE VIEW (<= 768px) */
 @media (max-width: 768px) {
-  /* Floating launcher in bottom-right corner with smooth elevation */
   .chat-launcher-container {
     bottom: 20px;
     right: 18px;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), bottom 0.3s ease;
-  }
-
-  /* When reaching footer, gracefully elevate the launcher so it never covers footer or Operix credit */
-  .chat-launcher-container.near-footer {
-    transform: translateY(-58px);
+    transition: bottom 0.3s ease;
   }
 
   /* Elevate floating launcher above mobile sticky cart when cart has items */
   .chat-launcher-container.with-mobile-cart {
     bottom: 96px;
-    transition: bottom 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .chat-launcher-container.with-mobile-cart.near-footer {
-    transform: translateY(-24px);
+    transition: bottom 0.3s ease;
   }
 
   /* Full original button size restored */

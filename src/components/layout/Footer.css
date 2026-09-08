@@ -93,6 +93,7 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+  padding-right: 140px; /* Safe buffer on desktop for bottom-right floating chat launcher */
 }
 
 .footer-bottom-sep {
@@ -194,7 +195,7 @@
   }
 
   .footer-bottom {
-    padding: 14px 0;
+    padding: 14px 0 84px 0; /* Safe-area padding to guarantee floating chat widget never obstructs credits or copyright */
     font-size: 12px;
   }
 
@@ -210,6 +211,7 @@
     gap: 8px;
     align-items: center;
     margin-top: 4px;
+    padding-right: 0;
   }
 
   .footer-bottom-sep {

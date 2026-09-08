@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Sparkles, MessageSquare } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
@@ -10,33 +10,17 @@ interface ChatLauncherProps {
 export const ChatLauncher: React.FC<ChatLauncherProps> = ({ isOpen, onClick }) => {
   const { itemCount } = useCart();
   const [isHovered, setIsHovered] = useState(false);
-  const [isNearFooter, setIsNearFooter] = useState(false);
-
-  useEffect(() => {
-    const footer = document.querySelector('footer');
-    if (!footer) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsNearFooter(entry.isIntersecting);
-      },
-      { threshold: 0.08 }
-    );
-
-    observer.observe(footer);
-    return () => observer.disconnect();
-  }, []);
 
   // If chat is open on mobile or desktop, hide the floating button so it doesn't obstruct
   if (isOpen) return null;
 
   // If cart has items on mobile, the mobile sticky cart bar sits at bottom: 24px (height ~56px).
-  // In that case, add the class 'elevated-mobile' so it stays safely above it (~94px from bottom).
+  // In that case, add the class 'with-mobile-cart' so it stays safely above it (~96px from bottom).
   const hasCartBar = itemCount > 0;
 
   return (
     <div 
-      className={`chat-launcher-container ${hasCartBar ? 'with-mobile-cart' : ''} ${isNearFooter ? 'near-footer' : ''}`}
+      className={`chat-launcher-container ${hasCartBar ? 'with-mobile-cart' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
