@@ -35,8 +35,21 @@ export const Footer: React.FC = () => {
       
       <div className="footer-bottom">
         <div className="container">
-          <p>{config.deliveryNote}</p>
-          <p>&copy; {new Date().getFullYear()} BITE UP. All rights reserved.</p>
+          <p className="footer-delivery-note">{config.deliveryNote}</p>
+          <div className="footer-bottom-meta">
+            <p className="footer-copyright">&copy; {new Date().getFullYear()} BITE UP. All rights reserved.</p>
+            <span className="footer-bottom-sep">·</span>
+            <a 
+              href="https://www.instagram.com/operixsys/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="operix-credit-badge"
+              title="Powered by Operix"
+            >
+              <span className="operix-label">Powered by</span>
+              <span className="operix-pill">Operix</span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
