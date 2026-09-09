@@ -6,6 +6,7 @@ import { ChatInput } from './ChatInput';
 import type { ChatMessage, QuickSuggestion } from './types';
 import { useAdmin } from '../../context/AdminContext';
 import { products as fallbackProducts } from '../../data/products';
+import { defaultContent } from '../../data/defaultContent';
 import './Chatbot.css';
 
 const DEFAULT_SUGGESTIONS: QuickSuggestion[] = [
