@@ -30,15 +30,27 @@ export const Chatbot: React.FC = () => {
 
   const availableProducts = products && products.length > 0 ? products : fallbackProducts;
 
-  const assistantName = siteContent.chatbotAssistantName || 'مساعد بايت أب | BITE UP Assistant';
-  const welcomeHeading = siteContent.chatbotWelcomeHeading || 'أهلاً بك في BITE UP';
-  const welcomeSubtext = siteContent.chatbotWelcomeSubtext || 'حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟';
+  const assistantName = siteContent.chatbotAssistantName && !siteContent.chatbotAssistantName.includes('مساعد بايت أب')
+    ? siteContent.chatbotAssistantName
+    : 'BITE UP Assistant';
+  const welcomeHeading = siteContent.chatbotWelcomeHeading && !siteContent.chatbotWelcomeHeading.includes('أهلاً بك')
+    ? siteContent.chatbotWelcomeHeading
+    : 'Welcome to BITE UP 👋';
+  const welcomeSubtext = siteContent.chatbotWelcomeSubtext && !siteContent.chatbotWelcomeSubtext.includes('حلى صحي')
+    ? siteContent.chatbotWelcomeSubtext
+    : 'High-protein, guilt-free treats crafted fresh in Amman with zero added sugar. How can I help you crave better today?';
 
   // Dynamic quick suggestions configured in admin
   const suggestions: QuickSuggestion[] = React.useMemo(() => {
     try {
       if (siteContent.chatbotQuickSuggestions) {
-        return JSON.parse(siteContent.chatbotQuickSuggestions);
+        const parsed = JSON.parse(siteContent.chatbotQuickSuggestions);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          if (parsed[0]?.label?.includes('المنيو') || parsed[0]?.label?.includes('أقل')) {
+            return DEFAULT_SUGGESTIONS;
+          }
+          return parsed;
+        }
       }
     } catch (e) {
       console.error(e);

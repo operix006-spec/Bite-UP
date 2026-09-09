@@ -159,9 +159,9 @@ export const defaultContent: SiteContent = {
 
   // --- CHATBOT & AI TRAINING ---
   chatbotEnabled: "true",
-  chatbotAssistantName: "مساعد بايت أب | BITE UP Assistant",
-  chatbotWelcomeHeading: "أهلاً بك في BITE UP",
-  chatbotWelcomeSubtext: "حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟",
+  chatbotAssistantName: "BITE UP Assistant",
+  chatbotWelcomeHeading: "Welcome to BITE UP 👋",
+  chatbotWelcomeSubtext: "High-protein, guilt-free treats crafted fresh in Amman with zero added sugar. How can I help you crave better today?",
   chatbotApiProvider: "openrouter",
   chatbotApiKey: "",
   chatbotModel: "google/gemini-2.0-flash-001",
@@ -211,7 +211,7 @@ export const defaultContent: SiteContent = {
    - إذا سأل عن طريقة الطلب: وضّح له أنه يستطيع اختيار الأصناف وإضافتها إلى السلة هنا في الموقع، ثم الضغط على إتمام الطلب لتتحول السلة تلقائياً إلى رسالة جاهزة عبر الواتساب مع العناوين والأسعار لتأكيد سريع.
    - إذا سأل عن التوصيل: التوصيل متاح لجميع مناطق عمّان.
    - إذا سأل عن المحل أو السوبرماركت: متوفرين في أكثر من 15 سوبرماركت شريك في عمّان (مرج الحمام، داحية الرشيد، الجبيهة، صويلح، وخلدا).
-   - النبرة والأسلوب: تحدث بلهجة عربية أردنية بيضاء راقية ومحترمة وذكية. كن مبتكراً ومقنعاً وانهِ ردك دائماً بسؤال لطيف يقرب العميل من الطلب (مثل: "بتحب تضيفه للسلة وتجربه؟" أو "بتحب أرشحلك نكهة ثانية مفضلة؟").`,
+   - النبرة والأسلوب: تحدث دائماً بلغة العميل؛ إذا سأل أو اختار بالإنجليزية فأجب بإنجليزية ممتازة وراقية واحترافية بدون إيموجي، وإذا سأل بالعربي فتحدث بلهجة عربية أردنية بيضاء راقية ومحترمة وذكية. كن مبتكراً ومقنعاً وانهِ ردك دائماً بسؤال لطيف يقرب العميل من الطلب (مثل: "بتحب تضيفه للسلة وتجربه؟" أو "Would you like to add it to your order?").`,
   chatbotKnowledgeBase: `=== مرجع القائمة الكاملة المعتمدة لـ BITE UP ===
 
 1. بودينغ البروتين (PROTEIN PUDDINGS)
@@ -343,10 +343,10 @@ export const defaultContent: SiteContent = {
 - التوصيل: متوفر لجميع مناطق عمّان عبر إتمام الطلب من السلة إلى الواتساب.
 - نقاط البيع في عمّان: متوفر لدى السوبرماركت والمتاجر الشريكة في مرج الحمام، داحية الرشيد، الجبيهة، صويلح، وخلدا.`,
   chatbotQuickSuggestions: JSON.stringify([
-    { id: 's1', label: 'عرض قائمة المنيو كاملة', prompt: 'اعرض لي قائمة المنيو كاملة بجميع الأصناف والأسعار' },
-    { id: 's2', label: 'أقل الأصناف سعرات حرارية', prompt: 'ما هي الأصناف التي تحتوي على أقل سعرات حرارية؟' },
-    { id: 's3', label: 'تفاصيل بودينغ براوني والماكروز', prompt: 'كم غرام بروتين وكارب وسعرات في بودينغ البراوني وما هي تفاصيله؟' },
-    { id: 's4', label: 'تفاصيل كاسات الجرانولا', prompt: 'اعطني تفاصيل كاسات الجرانولا وكم غرام بروتين فيها' },
-    { id: 's5', label: 'طريقة الحفظ والتوصيل', prompt: 'كيف يتم حفظ المنتجات وما هي تفاصيل التوصيل في عمّان؟' }
+    { id: 's1', label: 'View Full Menu & Prices', prompt: 'Show me the full BITE UP menu with all flavors and prices' },
+    { id: 's2', label: 'Lowest Calorie Options', prompt: 'Which BITE UP cups have the lowest calories?' },
+    { id: 's3', label: 'Pudding Brownie Macros', prompt: 'What are the full macros and ingredients of Pudding Brownie?' },
+    { id: 's4', label: 'Crunchy Granola Cups', prompt: 'Tell me about the granola flavors and how much protein they have' },
+    { id: 's5', label: 'Delivery & Storage Guide', prompt: 'How should I store BITE UP cups and how does delivery work in Amman?' }
   ]),
 };

@@ -26,7 +26,7 @@ export const ChatLauncher: React.FC<ChatLauncherProps> = ({ isOpen, onClick }) =
     >
       {/* DESKTOP TOOLTIP */}
       <div className={`chat-launcher-tooltip ${isHovered ? 'visible' : ''}`} role="tooltip">
-        <span>مساعد بايت أب الذكي</span>
+        <span>Ask BITE UP</span>
         <span className="tooltip-arrow" />
       </div>
 
@@ -41,7 +41,7 @@ export const ChatLauncher: React.FC<ChatLauncherProps> = ({ isOpen, onClick }) =
           <MessageSquare size={22} className="icon-chat" />
           <Sparkles size={14} className="icon-sparkle" />
         </div>
-        <span className="chat-launcher-label">اسأل بايت أب</span>
+        <span className="chat-launcher-label">Ask BITE UP</span>
         <span className="chat-launcher-pulse" />
       </button>
     </div>

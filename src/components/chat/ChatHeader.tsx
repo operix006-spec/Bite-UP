@@ -11,7 +11,7 @@ interface ChatHeaderProps {
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ 
   onClose, 
   title = 'BITE UP Assistant',
-  subtitle = 'جاهز لمساعدتك في اختيار حلاك الصحي' 
+  subtitle = 'Always ready to help you crave better' 
 }) => {
   return (
     <header className="chat-header">
