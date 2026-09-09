@@ -63,8 +63,8 @@ export const Chatbot: React.FC = () => {
   const findProductMatch = (text: string) => {
     const lower = text.toLowerCase();
     const keywordsMap: Record<string, string[]> = {
-      'p-brownie': ['brownie', 'براوني', 'شوكولاتة بلجيكية', 'شوكولا'],
-      'p-cookies': ['cookies', 'كوكيز', 'فانيليا'],
+      'p-brownie': ['brownie', 'براوني', 'شوكولاتة بلجيكية', 'شوكولا', 'كيك', 'كعك', 'كيكة', 'حلو', 'شوكولاته'],
+      'p-cookies': ['cookies', 'كوكيز', 'فانيليا', 'بسكوت', 'بسكويت'],
       'p-bounty': ['bounty', 'باونتي', 'جوز هند', 'جوز الهند'],
       'p-lotus': ['lotus', 'لوتس'],
       'p-oreo': ['oreo', 'اوريو', 'أوريو'],
@@ -111,27 +111,27 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
     if (apiKey && apiKey.length > 10) {
       try {
         const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
-        const model = 'google/gemini-2.0-flash-001';
-
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`
         };
 
-        headers['HTTP-Referer'] = typeof window !== 'undefined' ? window.location.origin : 'https://biteup.jo';
-        headers['X-Title'] = 'BITE UP Protein Desserts';
-
         const response = await fetch(endpoint, {
           method: 'POST',
           headers,
           body: JSON.stringify({
-            model,
+            models: [
+              'google/gemini-2.0-flash-001',
+              'google/gemini-2.0-flash-lite-preview-02-05:free',
+              'meta-llama/llama-3.3-70b-instruct:free',
+              'openrouter/auto'
+            ],
             temperature: parseFloat(siteContent.chatbotTemperature || '0.7'),
             max_tokens: parseInt(siteContent.chatbotMaxTokens || '800'),
             messages: [
               {
                 role: 'system',
-                content: `${siteContent.chatbotSystemPrompt || ''}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || ''}`
+                content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
               },
               ...messages.slice(-6).map((m) => ({
                 role: m.sender === 'user' ? 'user' : 'assistant',
@@ -164,10 +164,10 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
           }
         } else {
           const errText = await response.text();
-          console.warn('OpenRouter/AI API returned error status:', response.status, errText);
+          console.warn('OpenRouter/AI API error:', response.status, errText);
         }
       } catch (err) {
-        console.warn('Real AI API call encountered an issue, running local training engine fallback:', err);
+        console.warn('AI API fetch issue, switching to dynamic menu engine:', err);
       }
     }
 
@@ -216,6 +216,24 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
 3. جرانولا فراولة (Granola Strawberry): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | سكر طبيعي من الفواكه فقط
 
 يمكنك طلب أي صنف مباشرة من الموقع والتوصيل متوفر في كافة مناطق عمّان.`;
+      } else if (lower.includes('كيك') || lower.includes('كعك') || lower.includes('cake') || lower.includes('حلو') || lower.includes('حلويات') || lower.includes('شوكولاته') || lower.includes('شوكولا') || lower.includes('تشيز كيك')) {
+        replyText = `نحن في BITE UP متخصصون في حلى بودينغ البروتين الفاخر والجرانولا المقرمشة كبديل صحي وذكي للكيك والحلويات التقليدية، بدون سكر مضاف نهائياً وغني بالبروتين النقي.
+إذا كنت تشتهي طعم الكيك أو الشوكولاتة الغنية، نرشح لك:
+• بودينغ براوني (Pudding Brownie): طعم براوني شوكولاتة بلجيكية غنية مع 18 غرام بروتين صافي.
+• بودينغ كوكيز (Pudding Cookies): بطعم الفانيليا وقطع الكوكيز المقرمشة بدون سكر مضاف.
+• بودينغ تيراميسو (Pudding Tiramisu): لمحبي نكهة القهوة والتيراميسو الإيطالي بـ 245 سعرة فقط.`;
+        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
+      } else if (lower.includes('شو بتنصح') || lower.includes('نصيحة') || lower.includes('ازكى') || lower.includes('أزكى') || lower.includes('افضل') || lower.includes('أفضل') || lower.includes('اقتراح') || lower.includes('recommend')) {
+        replyText = `أكثر أصناف BITE UP طلباً وتقييماً:
+1. بودينغ براوني: الخيار الأول لعشاق الشوكولاتة الغنية والبروتين العالي (18 غرام).
+2. بودينغ بستاشيو: نكهة الفستق الحلبي الملكية، قوام كريمي لا يقاوم.
+3. بودينغ باونتي: لعشاق جوز الهند والشوكولاتة بـ 245 سعرة فقط وبدون سكر مضاف.
+4. كاسات جرانولا مكسرات: سناك صحي ومقرمش مثالي قبل أو بعد التمرين.
+هل تحب تجربة الشوكولاتة أم نكهات المكسرات والفواكه؟`;
+        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
+      } else if (lower.includes('مين') || lower.includes('شو بايت اب') || lower.includes('عنكم') || lower.includes('شو بتعملو') || lower.includes('about')) {
+        replyText = `BITE UP (بايت أب) هي علامة أردنية متخصصة في ابتكار حلويات وسناكات صحية غنية بالبروتين وبدون أي سكر مضاف، لمساعدتك على الاستمتاع بألذ حلى مع المحافظة على دايتك وصحتك في عمّان. شعارنا: Crave Better. Bite UP.`;
+        recommendedProduct = availableProducts[0];
       } else if (lower.includes('بودينغ') || lower.includes('بودنج') || lower.includes('pudding')) {
         // GENERAL PUDDING BREAKDOWN
         replyText = `تفاصيل بودينغ البروتين من BITE UP:
@@ -263,7 +281,8 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
       } else if (lower.includes('سكر') || lower.includes('sugar')) {
         replyText = `جميع منتجات BITE UP خالية تماماً من أي سكر مضاف أو مكرر. نعتمد على المحليات الطبيعية، وسكر الفواكه الطبيعي في جرانولا الفراولة فقط.`;
       } else {
-        replyText = `أهلاً بك في BITE UP. يسعدنا تقديم حلى صحي، غني بالبروتين وبدون سكر مضاف. يمكنك السؤال عن المنيو كاملة أو السؤال عن تفاصيل الماكروز والغرامات لأي صنف.`;
+        replyText = `أهلاً بك في BITE UP! نقدم 10 نكهات من بودينغ البروتين الغني (1.75 دينار | 18 غرام بروتين نقي وبدون سكر مضاف) و3 نكهات جرانولا مقرمشة (2.00 دينار | 16 غرام بروتين).
+يمكنك سؤالي عن المنيو كاملة، السعرات والماكروز، التوصيل في عمّان، أو ترشيح الصنف الأنسب لهدفك!`;
         recommendedProduct = recommendedProduct || availableProducts[0];
       }
 
