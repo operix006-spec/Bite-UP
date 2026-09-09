@@ -36,6 +36,8 @@ export const ChatbotManager: React.FC = () => {
   const [welcomeHeading, setWelcomeHeading] = useState(siteContent.chatbotWelcomeHeading || 'أهلاً بك في BITE UP');
   const [welcomeSubtext, setWelcomeSubtext] = useState(siteContent.chatbotWelcomeSubtext || 'حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟');
   
+  const [apiKey, setApiKey] = useState(siteContent.chatbotApiKey || '');
+
   // 2. Persona & Knowledge
   const [systemPrompt, setSystemPrompt] = useState(siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt);
   const [knowledgeBase, setKnowledgeBase] = useState(siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase);
@@ -75,6 +77,7 @@ export const ChatbotManager: React.FC = () => {
     if (siteContent.chatbotAssistantName) setAssistantName(siteContent.chatbotAssistantName);
     if (siteContent.chatbotWelcomeHeading) setWelcomeHeading(siteContent.chatbotWelcomeHeading);
     if (siteContent.chatbotWelcomeSubtext) setWelcomeSubtext(siteContent.chatbotWelcomeSubtext);
+    if (siteContent.chatbotApiKey !== undefined) setApiKey(siteContent.chatbotApiKey);
     if (siteContent.chatbotSystemPrompt) setSystemPrompt(siteContent.chatbotSystemPrompt);
     if (siteContent.chatbotKnowledgeBase) setKnowledgeBase(siteContent.chatbotKnowledgeBase);
   }, [siteContent]);
@@ -95,7 +98,7 @@ export const ChatbotManager: React.FC = () => {
         chatbotKnowledgeBase: knowledgeBase,
         chatbotQuickSuggestions: JSON.stringify(suggestions),
         chatbotApiProvider: 'openrouter',
-        chatbotApiKey: '',
+        chatbotApiKey: apiKey.trim(),
         chatbotModel: 'google/gemini-2.0-flash-001',
         chatbotApiUrl: 'https://openrouter.ai/api/v1/chat/completions',
         chatbotTemperature: '0.7',
@@ -301,6 +304,20 @@ export const ChatbotManager: React.FC = () => {
                   placeholder="حلى صحي، غني بالبروتين، وبدون سكر مضاف"
                 />
               </div>
+            </div>
+
+            <div className="form-group" style={{ marginTop: '14px' }}>
+              <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>مفتاح OpenRouter API Key</span>
+                <span style={{ fontSize: '0.78rem', color: '#65B7BB', fontWeight: 600 }}>OpenRouter Live</span>
+              </label>
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="sk-or-v1-... (الصق المفتاح الجديد هنا إن أردت)"
+                style={{ direction: 'ltr', letterSpacing: '1px' }}
+              />
             </div>
           </div>
 

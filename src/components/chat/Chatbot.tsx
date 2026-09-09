@@ -117,6 +117,7 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
     ];
 
     let replyText = '';
+    let lastError = '';
 
     // Call OpenRouter with candidate models
     for (const modelName of candidateModels) {
@@ -157,9 +158,11 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
         } else {
           const errStatus = response.status;
           const errText = await response.text();
+          lastError = `${errStatus}: ${errText}`;
           console.warn(`OpenRouter model ${modelName} returned status ${errStatus}:`, errText);
         }
-      } catch (err) {
+      } catch (err: any) {
+        lastError = err?.message || 'Network error';
         console.warn(`Network call failed for OpenRouter model ${modelName}:`, err);
       }
     }
@@ -181,13 +184,21 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
         }
       ]);
     } else {
-      // In case OpenRouter completely fails on all models, notify with retry
+      let userErrMsg = 'عذراً، تعذر الاتصال بسيرفر الذكاء الاصطناعي.';
+      if (lastError.includes('401') || lastError.includes('Key') || lastError.includes('auth') || lastError.includes('Unauthorized')) {
+        userErrMsg = 'مفتاح OpenRouter API Key تم إلغاؤه أو غير صالح. يرجى نسخ مفتاح جديد من تبويب OpenRouter المفتوح لديك.';
+      } else if (lastError.includes('402') || lastError.includes('credits') || lastError.includes('balance')) {
+        userErrMsg = 'رصيد حساب OpenRouter غير كافٍ. يرجى شحن رصيد بسيط في OpenRouter.';
+      } else if (lastError) {
+        userErrMsg = `خطأ في سيرفر OpenRouter: ${lastError.slice(0, 120)}`;
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: 'err-' + Date.now(),
           sender: 'assistant',
-          text: 'عذراً، حدث ضغط مؤقت على سيرفر الذكاء الاصطناعي. يرجى إعادة إرسال سؤالك وسأجيبك فوراً.',
+          text: userErrMsg,
           timestamp: new Date(),
           isError: true
         }
