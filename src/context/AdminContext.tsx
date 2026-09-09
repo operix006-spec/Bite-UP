@@ -112,10 +112,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   useEffect(() => {
-    // Safety timeout: never hang on loading longer than 2.5 seconds under any network condition
+    // Safety timeout: on first visit without cache, allow sufficient time (7s) for Supabase to deliver fresh data over mobile networks
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 2500);
+    }, hasCachedData ? 1500 : 7000);
 
     fetchData();
 
