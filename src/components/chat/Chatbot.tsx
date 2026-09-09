@@ -117,15 +117,14 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
           'Authorization': `Bearer ${apiKey}`
         };
 
-        const response = await fetch(endpoint, {
+        let response = await fetch(endpoint, {
           method: 'POST',
           headers,
           body: JSON.stringify({
+            model: 'google/gemini-2.0-flash-001',
             models: [
               'google/gemini-2.0-flash-001',
-              'google/gemini-2.0-flash-lite-preview-02-05:free',
-              'meta-llama/llama-3.3-70b-instruct:free',
-              'openrouter/auto'
+              'meta-llama/llama-3.3-70b-instruct:free'
             ],
             temperature: parseFloat(siteContent.chatbotTemperature || '0.7'),
             max_tokens: parseInt(siteContent.chatbotMaxTokens || '800'),
@@ -142,6 +141,31 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
             ]
           })
         });
+
+        // If primary call failed (e.g. 402 no credits), auto-retry with 100% free model
+        if (!response.ok) {
+          console.warn('OpenRouter primary model failed, retrying with free model...');
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              model: 'meta-llama/llama-3.3-70b-instruct:free',
+              temperature: 0.7,
+              max_tokens: 800,
+              messages: [
+                {
+                  role: 'system',
+                  content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
+                },
+                ...messages.slice(-4).map((m) => ({
+                  role: m.sender === 'user' ? 'user' : 'assistant',
+                  content: m.text || ''
+                })),
+                { role: 'user', content: userText }
+              ]
+            })
+          });
+        }
 
         if (response.ok) {
           const data = await response.json();
@@ -235,6 +259,10 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
       } else if (lower.includes('مين') || lower.includes('شو بايت اب') || lower.includes('عنكم') || lower.includes('شو بتعملو') || lower.includes('about')) {
         replyText = `BITE UP (بايت أب) هي علامة أردنية متخصصة في ابتكار حلويات وسناكات صحية غنية بالبروتين وبدون أي سكر مضاف، لمساعدتك على الاستمتاع بألذ حلى مع المحافظة على دايتك وصحتك في عمّان. شعارنا: Crave Better. Bite UP.`;
         recommendedProduct = availableProducts[0];
+      } else if (lower.includes('باذنجان') || lower.includes('شاورما') || lower.includes('برجر') || lower.includes('بيتزا') || lower.includes('دجاج') || lower.includes('لحم') || lower.includes('وجبات') || lower.includes('طبيخ') || lower.includes('خضار')) {
+        replyText = `أهلاً بك! في BITE UP نحن متخصصون حصراً في حلويات وسناكات البروتين الصحية (بودينغ البروتين والجرانولا المقرمشة) الخالية من السكر المضاف، ولا تتوفر لدينا أي وجبات مطبوخة أو خضروات مثل الباذنجان.
+إذا كنت تبحث عن سناك صحي غني بالبروتين ولذيذ، يسعدنا أن نرشح لك بودينغ البراوني الفاخر (18 غرام بروتين) أو كاسات جرانولا المكسرات!`;
+        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
       } else if (lower.includes('بودينغ') || lower.includes('بودنج') || lower.includes('pudding')) {
         // GENERAL PUDDING BREAKDOWN
         replyText = `تفاصيل بودينغ البروتين من BITE UP:
