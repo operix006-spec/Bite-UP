@@ -118,10 +118,8 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
           'Authorization': `Bearer ${apiKey}`
         };
 
-        if (isOpenRouter || endpoint.includes('openrouter')) {
-          headers['HTTP-Referer'] = typeof window !== 'undefined' ? window.location.origin : 'https://biteup.jo';
-          headers['X-Title'] = 'BITE UP Protein Desserts';
-        }
+        headers['HTTP-Referer'] = typeof window !== 'undefined' ? window.location.origin : 'https://biteup.jo';
+        headers['X-Title'] = 'BITE UP Protein Desserts';
 
         const response = await fetch(endpoint, {
           method: 'POST',
