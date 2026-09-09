@@ -472,6 +472,9 @@
   font-size: 0.875rem;
   line-height: 1.45;
   word-break: break-word;
+  white-space: pre-wrap;
+  unicode-bidi: plaintext;
+  text-align: start;
 }
 
 .user-bubble {

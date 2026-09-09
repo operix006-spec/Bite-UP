@@ -159,50 +159,189 @@ export const defaultContent: SiteContent = {
 
   // --- CHATBOT & AI TRAINING ---
   chatbotEnabled: "true",
-  chatbotAssistantName: "BITE UP Assistant",
-  chatbotWelcomeHeading: "Hi! 👋",
-  chatbotWelcomeSubtext: "What can I help you find today?",
-  chatbotApiProvider: "openai",
-  chatbotApiKey: "",
-  chatbotModel: "gpt-4o-mini",
-  chatbotApiUrl: "",
+  chatbotAssistantName: "مساعد بايت أب | BITE UP Assistant",
+  chatbotWelcomeHeading: "أهلاً بك في BITE UP",
+  chatbotWelcomeSubtext: "حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟",
+  chatbotApiProvider: "openrouter",
+  chatbotApiKey: "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",
+  chatbotModel: "google/gemini-2.0-flash-001",
+  chatbotApiUrl: "https://openrouter.ai/api/v1/chat/completions",
   chatbotTemperature: "0.7",
-  chatbotMaxTokens: "500",
-  chatbotSystemPrompt: `You are the friendly, energetic, and knowledgeable AI assistant for BITE UP — a premium protein desserts and snacks brand based in Amman, Jordan.
+  chatbotMaxTokens: "800",
+  chatbotSystemPrompt: `أنت المساعد الذكي الرسمي لعلامة BITE UP (بايت أب) المتخصصة في الحلويات والسناكات الصحية الغنية بالبروتين وبدون سكر مضاف في عمّان، الأردن. شعارنا: "CRAVE BETTER. BITE UP."
 
-BRAND VOICE & PERSONALITY:
-- Warm, motivating, health-conscious, and dessert-loving.
-- Speak in concise, clear, and appetizing sentences.
-- You speak fluent English and Arabic (respond in the language the user asks in).
-- Emphasize that healthy food does not mean giving up on taste or indulgence.
+قواعد أساسية وصارمة جداً:
+1. منع استخدام الإيموجي أو السمايلات منعاً باتاً:
+   يمنع منعاً قاطعاً استخدام أي شكل من أشكال الإيموجي (Emojis) أو السمايلات أو الوجوه التعبيرية أو الرموز في ردودك نهائياً. يجب أن تكون الردود نصية بحتة، راقية، ذكية، واحترافية.
 
-CORE RULES:
-1. Recommend BITE UP products based on customer fitness goals (muscle gain, weight loss, sweet tooth without sugar crash).
-2. All puddings contain 18g of premium whey isolate protein and ZERO refined sugar.
-3. Mention that products must be refrigerated and consumed fresh within 5 days.
-4. If asked about branches, mention key Amman areas like Marj Al Hamam, Sweileh, Al Jubeiha, and Khalda.
-5. If someone wants to buy, guide them to add to cart on the website or order via WhatsApp.`,
-  chatbotKnowledgeBase: `PRODUCT LINEUP & DETAILS:
-- Pudding Brownie: 345 kcal, 18g Protein, 27g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Rich Belgian cocoa taste.
-- Pudding Cookies: 345 kcal, 18g Protein, 27g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Vanilla cookie creaminess.
-- Pudding Bounty: 245 kcal, 18g Protein, 17g Carbs, 3g Fat. No Added Sugar. 1.75 JD. Refreshing coconut & chocolate layer.
-- Granola Nuts: Crunchy wholesome oat cluster with roasted nuts. Clean slow-release energy.
-- Granola Pineapple: Tropical crunch with dried pineapple pieces.
+2. الرد عند السؤال عن المنيو أو قائمة الأصناف:
+   إذا سأل العميل عن المنيو، أو قائمة الطعام، أو الأصناف المتوفرة، أو "شو عندكم"، يجب عليك ذكر جميع الأصناف الـ 13 كاملة بدون استثناء مقسمة إلى الفئتين التاليتين مع الأسعار والماكروز المختصرة:
+   - فئة بودينغ البروتين (السعر: 1.75 دينار للعلبة | 18 غرام بروتين صافي | بدون سكر مضاف):
+     1. بودينغ براوني (Pudding Brownie): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     2. بودينغ كوكيز (Pudding Cookies): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     3. بودينغ باونتي (Pudding Bounty): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     4. بودينغ لوتس (Pudding Lotus): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     5. بودينغ أوريو (Pudding Oreo): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     6. بودينغ فيريرو (Pudding Ferrero): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     7. بودينغ سنيكرز (Pudding Snickers): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     8. بودينغ تيراميسو (Pudding Tiramisu): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     9. بودينغ بستاشيو (Pudding Pistachio): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+     10. بودينغ كيندر (Pudding Kinder): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون.
+   - فئة كاسات الجرانولا المقرمشة (السعر: 2.00 دينار للعلبة | 16 غرام بروتين | سناك صحي ومقرمش):
+     1. جرانولا مكسرات (Granola Nuts): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | بدون سكر مضاف.
+     2. جرانولا أناناس (Granola Pineapple): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | بدون سكر مضاف.
+     3. جرانولا فراولة (Granola Strawberry): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | سكر طبيعي من الفواكه فقط.
 
-FREQUENTLY ASKED QUESTIONS:
-Q: Is there any added sugar?
-A: Absolutely zero refined or added sugars. Naturally sweetened.
-Q: What is the protein source?
-A: High-grade pure Whey Protein Isolate.
-Q: How long does it last?
-A: Keep refrigerated between 2°C - 4°C. Best consumed within 5 days from production.
-Q: Do you deliver?
-A: Yes! You can build your cart right here on the website and submit your order directly to our WhatsApp dispatch team.`,
+3. الرد عند السؤال عن أي صنف معين أو كم غرام فيه:
+   إذا سأل العميل عن صنف معين أو استفسر عن عدد الغرامات أو الماكروز أو المكونات، يجب تزويده بكافة التفاصيل بالأرقام والغرامات الكاملة:
+   - اسم الصنف باللغتين العربية والإنجليزية.
+   - السعر الدقيق بالدينار الأردني (JD).
+   - السعرات الحرارية الكلية (kcal).
+   - كمية البروتين الصافي بالغرام (g) مع ذكر أنه واي بروتين معزول نقي (Whey Protein Isolate).
+   - كمية الكاربوهيدرات بالغرام (g).
+   - كمية الدهون بالغرام (g).
+   - حالة السكر (بدون سكر مضاف، أو سكر طبيعي من الفواكه).
+   - وصف النكهة والقوام.
+   - طريقة الحفظ: مبرد بالثلاجة بين 2 إلى 4 درجات مئوية، والاستهلاك خلال 5 أيام من الإنتاج.
+
+4. الذكاء في المساعدة وتوجيه العميل:
+   - فهم هدف العميل وتقديم ترشيحات ذكية (مثلاً: لتخفيف الوزن والتنشيف بأقل سعرات: الباونتي أو اللوتس أو الفيريرو أو السنيكرز أو التيراميسو أو البستاشيو لأنها 245 سعرة حرارية فقط مع 18 غرام بروتين؛ وللشوكولاتة المكثفة: البراوني أو الكيندر أو الأوريو).
+   - طريقة الطلب: إرشاد العميل لإضافة المنتج إلى السلة على الموقع وإتمام الطلب عبر الواتساب، مع توفر التوصيل لكافة مناطق عمّان ونقاط البيع الشريكة في مرج الحمام، داحية الرشيد، الجبيهة، صويلح، وخلدا.`,
+  chatbotKnowledgeBase: `=== مرجع القائمة الكاملة المعتمدة لـ BITE UP ===
+
+1. بودينغ البروتين (PROTEIN PUDDINGS)
+السعر الموحد: 1.75 دينار للعلبة | 18 غرام بروتين صافي | بدون سكر مضاف
+
+• Pudding Brownie (بودينغ براوني):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 345 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: كاكاو بلجيكي فاخر غني وبراوني طري لعشاق الشوكولاتة
+
+• Pudding Cookies (بودينغ كوكيز):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 345 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: كوكيز فانيليا أمريكي كريمي ومتوازن
+
+• Pudding Bounty (بودينغ باونتي):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: جوز هند طبيعي منعش مع طبقة شوكولاتة خفيفة
+
+• Pudding Lotus (بودينغ لوتس):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: بسكويت لوتس مكرمل مع لمسة قرفة خفيفة
+
+• Pudding Oreo (بودينغ أوريو):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 345 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: بسكويت أوريو داكن مع كريمة بروتينية
+
+• Pudding Ferrero (بودينغ فيريرو):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: بندق محمص مع شوكولاتة على طريقة فيريرو روشيه
+
+• Pudding Snickers (بودينغ سنيكرز):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: كراميل صحي مع فول سوداني محمص وشوكولاتة
+
+• Pudding Tiramisu (بودينغ تيراميسو):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: قهوة إسبريسو إيطالية وكريمة ماسكاربوني خفيفة
+
+• Pudding Pistachio (بودينغ بستاشيو):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 245 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: فستق حلبي طبيعي كريمي فاخر
+
+• Pudding Kinder (بودينغ كيندر):
+  - السعر: 1.75 JD
+  - السعرات الحرارية: 345 kcal
+  - البروتين: 18 غرام صافي (Whey Protein Isolate)
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 3 غرام
+  - السكر: بدون سكر مضاف نهائياً
+  - المذاق: شوكولاتة كيندر بالحليب مع طبقة كريمة بيضاء
+
+2. كاسات الجرانولا المقرمشة (CRUNCHY GRANOLA)
+السعر الموحد: 2.00 دينار للعلبة | 16 غرام بروتين | سناك صحي ومقرمش
+
+• Granola Nuts (جرانولا مكسرات):
+  - السعر: 2.00 JD
+  - السعرات الحرارية: 205 kcal
+  - البروتين: 16 غرام صافي
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 7 غرام دهون صحية
+  - السكر: بدون سكر مضاف نهائياً
+  - المكونات: شوفان محمص مع تشكيلة مكسرات طبيعية غنية بالطاقة والألياف
+
+• Granola Pineapple (جرانولا أناناس):
+  - السعر: 2.00 JD
+  - السعرات الحرارية: 205 kcal
+  - البروتين: 16 غرام صافي
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 7 غرام دهون صحية
+  - السكر: بدون سكر مضاف نهائياً
+  - المكونات: شوفان محمص مع قطع أناناس طبيعي مجفف لمذاق استوائي منعش
+
+• Granola Strawberry (جرانولا فراولة):
+  - السعر: 2.00 JD
+  - السعرات الحرارية: 205 kcal
+  - البروتين: 16 غرام صافي
+  - الكاربوهيدرات: 27 غرام
+  - الدهون: 7 غرام دهون صحية
+  - السكر: سكر طبيعي من الفواكه فقط (بدون سكر مكرر)
+  - المكونات: شوفان محمص مع قطع فراولة طبيعية مجففة
+
+معلومات المتجر والتوصيل والحفظ:
+- الحفظ: يجب حفظ جميع العلب في الثلاجة في درجة حرارة بين 2 و4 درجات مئوية.
+- مدة الصلاحية: تستهلك طازجة خلال 5 أيام من تاريخ الإنتاج.
+- التوصيل: متوفر لجميع مناطق عمّان عبر إتمام الطلب من السلة إلى الواتساب.
+- نقاط البيع في عمّان: متوفر لدى السوبرماركت والمتاجر الشريكة في مرج الحمام، داحية الرشيد، الجبيهة، صويلح، وخلدا.`,
   chatbotQuickSuggestions: JSON.stringify([
-    { id: 's1', label: 'What should I try?', prompt: 'What should I try?' },
-    { id: 's2', label: 'Show me high-protein options', prompt: 'Show me high-protein options' },
-    { id: 's3', label: 'How many calories?', prompt: 'How many calories are in BITE UP cups?' },
-    { id: 's4', label: 'Where can I find BITE UP?', prompt: 'Where can I find BITE UP in Amman?' },
-    { id: 's5', label: 'Help me choose', prompt: 'Help me choose based on my fitness goals' }
+    { id: 's1', label: 'عرض قائمة المنيو كاملة', prompt: 'اعرض لي قائمة المنيو كاملة بجميع الأصناف والأسعار' },
+    { id: 's2', label: 'أقل الأصناف سعرات حرارية', prompt: 'ما هي الأصناف التي تحتوي على أقل سعرات حرارية؟' },
+    { id: 's3', label: 'تفاصيل بودينغ براوني والماكروز', prompt: 'كم غرام بروتين وكارب وسعرات في بودينغ البراوني وما هي تفاصيله؟' },
+    { id: 's4', label: 'تفاصيل كاسات الجرانولا', prompt: 'اعطني تفاصيل كاسات الجرانولا وكم غرام بروتين فيها' },
+    { id: 's5', label: 'طريقة الحفظ والتوصيل', prompt: 'كيف يتم حفظ المنتجات وما هي تفاصيل التوصيل في عمّان؟' }
   ]),
 };

@@ -22,8 +22,8 @@ export const ChatMessageList: React.FC<ChatMessageListProps> = ({
   onSelectSuggestion,
   onRetry,
   onViewProduct,
-  welcomeHeading = 'Hi! 👋',
-  welcomeSubtext = 'What can I help you find today?'
+  welcomeHeading = 'أهلاً بك في BITE UP',
+  welcomeSubtext = 'حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟'
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 

@@ -30,9 +30,9 @@ export const ChatbotManager: React.FC = () => {
 
   // Form State
   const [enabled, setEnabled] = useState(siteContent.chatbotEnabled !== 'false');
-  const [assistantName, setAssistantName] = useState(siteContent.chatbotAssistantName || 'BITE UP Assistant');
-  const [welcomeHeading, setWelcomeHeading] = useState(siteContent.chatbotWelcomeHeading || 'Hi! 👋');
-  const [welcomeSubtext, setWelcomeSubtext] = useState(siteContent.chatbotWelcomeSubtext || 'What can I help you find today?');
+  const [assistantName, setAssistantName] = useState(siteContent.chatbotAssistantName || 'مساعد بايت أب | BITE UP Assistant');
+  const [welcomeHeading, setWelcomeHeading] = useState(siteContent.chatbotWelcomeHeading || 'أهلاً بك في BITE UP');
+  const [welcomeSubtext, setWelcomeSubtext] = useState(siteContent.chatbotWelcomeSubtext || 'حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟');
   
   // API & Model
   const [apiProvider, setApiProvider] = useState(siteContent.chatbotApiProvider || 'openai');
@@ -61,11 +61,11 @@ export const ChatbotManager: React.FC = () => {
       console.error(e);
     }
     return [
-      { id: 's1', label: 'What should I try?', prompt: 'What should I try?' },
-      { id: 's2', label: 'Show me high-protein options', prompt: 'Show me high-protein options' },
-      { id: 's3', label: 'How many calories?', prompt: 'How many calories are in BITE UP cups?' },
-      { id: 's4', label: 'Where can I find BITE UP?', prompt: 'Where can I find BITE UP in Amman?' },
-      { id: 's5', label: 'Help me choose', prompt: 'Help me choose based on my fitness goals' }
+      { id: 's1', label: 'عرض قائمة المنيو كاملة', prompt: 'اعرض لي قائمة المنيو كاملة بجميع الأصناف والأسعار' },
+      { id: 's2', label: 'أقل الأصناف سعرات حرارية', prompt: 'ما هي الأصناف التي تحتوي على أقل سعرات حرارية؟' },
+      { id: 's3', label: 'تفاصيل بودينغ براوني والماكروز', prompt: 'كم غرام بروتين وكارب وسعرات في بودينغ البراوني وما هي تفاصيله؟' },
+      { id: 's4', label: 'تفاصيل كاسات الجرانولا', prompt: 'اعطني تفاصيل كاسات الجرانولا وكم غرام بروتين فيها' },
+      { id: 's5', label: 'طريقة الحفظ والتوصيل', prompt: 'كيف يتم حفظ المنتجات وما هي تفاصيل التوصيل في عمّان؟' }
     ];
   });
 
@@ -75,7 +75,7 @@ export const ChatbotManager: React.FC = () => {
 
   // Sandbox Test Chat State
   const [testMessages, setTestMessages] = useState<Array<{ sender: 'user' | 'assistant'; text: string }>>([
-    { sender: 'assistant', text: 'Hello! I am your BITE UP Assistant. Ask me anything to test my training.' }
+    { sender: 'assistant', text: 'أهلاً بك، أنا مساعد BITE UP الذكي. يمكنك سؤالي عن المنيو كاملة أو عن غرامات وماكروز أي صنف لتجربة التدريب.' }
   ]);
   const [testInput, setTestInput] = useState('');
   const [isTestingTyping, setIsTestingTyping] = useState(false);
@@ -168,7 +168,7 @@ export const ChatbotManager: React.FC = () => {
   };
 
   // Test Sandbox Execution
-  const handleSendTestMessage = (e: React.FormEvent) => {
+  const handleSendTestMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!testInput.trim() || isTestingTyping) return;
 
@@ -177,20 +177,83 @@ export const ChatbotManager: React.FC = () => {
     setTestInput('');
     setIsTestingTyping(true);
 
-    // Simulate AI response utilizing current settings
+    // Try real API call if API key is provided
+    if (apiKey && apiKey.trim().length > 10) {
+      try {
+        const isOpenRouter = apiKey.startsWith('sk-or-') || apiProvider === 'openrouter';
+        let endpoint = apiUrl.trim();
+        if (!endpoint) {
+          endpoint = isOpenRouter 
+            ? 'https://openrouter.ai/api/v1/chat/completions' 
+            : 'https://api.openai.com/v1/chat/completions';
+        }
+        const activeModel = model.trim() || (isOpenRouter ? 'google/gemini-2.0-flash-001' : 'gpt-4o-mini');
+
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey.trim()}`
+        };
+
+        if (isOpenRouter || endpoint.includes('openrouter')) {
+          headers['HTTP-Referer'] = typeof window !== 'undefined' ? window.location.origin : 'https://biteup.jo';
+          headers['X-Title'] = 'BITE UP Admin Sandbox';
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            model: activeModel,
+            temperature: parseFloat(temperature || '0.7'),
+            max_tokens: parseInt(maxTokens || '600'),
+            messages: [
+              {
+                role: 'system',
+                content: `${systemPrompt}\n\nKNOWLEDGE BASE & STORE FACTS:\n${knowledgeBase}`
+              },
+              ...testMessages.slice(-4).map((m) => ({
+                role: m.sender === 'user' ? 'user' : 'assistant',
+                content: m.text
+              })),
+              { role: 'user', content: userText }
+            ]
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const liveReply = data.choices?.[0]?.message?.content;
+          if (liveReply) {
+            const cleanReply = liveReply
+              .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}\u{FE0F}]/gu, '')
+              .replace(/(?:\s|^)(?::\)|:-\)|:\(|:-\(|;\)|;-\)|:D|:-D|:P|:-P|\^_\^|<3)(?:\s|$)/g, ' ')
+              .trim();
+            setIsTestingTyping(false);
+            setTestMessages((prev) => [...prev, { sender: 'assistant', text: cleanReply }]);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Sandbox live AI call failed, falling back to simulated output:', err);
+      }
+    }
+
+    // Fallback simulation
     setTimeout(() => {
       setIsTestingTyping(false);
       let simulatedReply = '';
 
       const lower = userText.toLowerCase();
-      if (lower.includes('protein') || lower.includes('muscle')) {
-        simulatedReply = `[Model: ${model} | Temp: ${temperature}]\nBased on BITE UP standards, our puddings provide 18g of pure whey protein isolate with zero refined sugar. Ideal for post-workout recovery or clean snacking!`;
-      } else if (lower.includes('location') || lower.includes('where') || lower.includes('amman')) {
-        simulatedReply = `[Model: ${model} | Temp: ${temperature}]\nYou can find fresh BITE UP cups in over 15 retail partners across Amman, including Marj Al Hamam, Dahiyat Al Rashid, Sweileh, and Al Jubeiha.`;
-      } else if (lower.includes('shelf') || lower.includes('expire') || lower.includes('keep')) {
-        simulatedReply = `[Model: ${model} | Temp: ${temperature}]\nAs per our fresh preparation guidelines, keep cups refrigerated between 2°C - 4°C and consume within 5 days for optimal taste and texture.`;
+      if (lower.includes('سعر') || lower.includes('اسعار') || lower.includes('price')) {
+        simulatedReply = `[Model: ${model}]\nقائمة الأسعار المعتمدة:\n• علب بودينغ البروتين (10 نكهات): 1.75 JD مع 18g بروتين صافي وبدون سكر مضاف.\n• كاسات الجرانولا المقرمشة (3 نكهات): 2.00 JD مع 16g بروتين.`;
+      } else if (lower.includes('protein') || lower.includes('بروتين') || lower.includes('muscle')) {
+        simulatedReply = `[Model: ${model}]\nجميع علب البودينغ تحتوي على 18g من الواي بروتين النقي (Whey Protein Isolate) بدون سكر مضاف.`;
+      } else if (lower.includes('location') || lower.includes('where') || lower.includes('amman') || lower.includes('عمّان')) {
+        simulatedReply = `[Model: ${model}]\nنوفر التوصيل لكافة مناطق عمّان، ومتوفرين في أكثر من 15 سوبرماركت شريك (مرج الحمام، داحية الرشيد، صويلح، والجبيهة).`;
+      } else if (lower.includes('shelf') || lower.includes('expire') || lower.includes('حفظ') || lower.includes('صلاحية')) {
+        simulatedReply = `[Model: ${model}]\nتحفظ العلب مبردة في الثلاجة بين 2°C إلى 4°C وتستهلك خلال 5 أيام كأفضل طزاجة وجودة.`;
       } else {
-        simulatedReply = `[Model: ${model} | Temp: ${temperature}]\nResponding with persona "${assistantName}": Thank you for asking! I'm trained with your customized system instructions (${systemPrompt.slice(0, 45)}...) and knowledge base facts.`;
+        simulatedReply = `[Model: ${model} | Live Provider: ${apiProvider}]\nأهلاً بك! أنا مساعد BITE UP الذكي المدرب لخدمة عملاء المطعم والإجابة على أي استفسار حول القائمة والصحة.`;
       }
 
       setTestMessages((prev) => [...prev, { sender: 'assistant', text: simulatedReply }]);
@@ -273,7 +336,7 @@ export const ChatbotManager: React.FC = () => {
                   type="text"
                   value={welcomeHeading}
                   onChange={(e) => setWelcomeHeading(e.target.value)}
-                  placeholder="Hi! 👋"
+                  placeholder="أهلاً بك في BITE UP"
                 />
               </div>
               <div className="form-group">
@@ -282,7 +345,7 @@ export const ChatbotManager: React.FC = () => {
                   type="text"
                   value={welcomeSubtext}
                   onChange={(e) => setWelcomeSubtext(e.target.value)}
-                  placeholder="What can I help you find today?"
+                  placeholder="حلى صحي، غني بالبروتين، وبدون سكر مضاف"
                 />
               </div>
             </div>
@@ -303,9 +366,19 @@ export const ChatbotManager: React.FC = () => {
                 <label>AI Provider</label>
                 <select
                   value={apiProvider}
-                  onChange={(e) => setApiProvider(e.target.value)}
+                  onChange={(e) => {
+                    const newProv = e.target.value;
+                    setApiProvider(newProv);
+                    if (newProv === 'openrouter') {
+                      setApiUrl('https://openrouter.ai/api/v1/chat/completions');
+                      if (!model || model === 'gpt-4o-mini') {
+                        setModel('google/gemini-2.0-flash-001');
+                      }
+                    }
+                  }}
                   className="cm-select"
                 >
+                  <option value="openrouter">OpenRouter (Recommended - Fast & Multi-Model)</option>
                   <option value="openai">OpenAI (GPT-4o, GPT-4o-mini)</option>
                   <option value="gemini">Google Gemini (Gemini 1.5 Flash / Pro)</option>
                   <option value="anthropic">Anthropic Claude (Claude 3.5 Sonnet / Haiku)</option>
@@ -320,8 +393,35 @@ export const ChatbotManager: React.FC = () => {
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  placeholder="e.g. gpt-4o-mini, gemini-1.5-flash"
+                  placeholder="e.g. google/gemini-2.0-flash-001, openai/gpt-4o-mini"
                 />
+                {(apiProvider === 'openrouter' || apiKey.startsWith('sk-or-')) && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#65B7BB', fontWeight: 600, alignSelf: 'center' }}>Recommended:</span>
+                    {[
+                      { name: 'Gemini 2.0 Flash', id: 'google/gemini-2.0-flash-001' },
+                      { name: 'GPT-4o Mini', id: 'openai/gpt-4o-mini' },
+                      { name: 'Llama 3.3 70B', id: 'meta-llama/llama-3.3-70b-instruct' }
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setModel(m.id)}
+                        style={{
+                          fontSize: '0.72rem',
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          border: model === m.id ? '1px solid #65B7BB' : '1px solid rgba(17,20,20,0.1)',
+                          backgroundColor: model === m.id ? '#DDF4F4' : '#ffffff',
+                          color: '#111414',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {m.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -332,7 +432,7 @@ export const ChatbotManager: React.FC = () => {
                   type={showKey ? 'text' : 'password'}
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="sk-... or your AI API Key"
+                  placeholder="sk-or-v1-... or your AI API Key"
                 />
                 <button
                   type="button"
@@ -346,14 +446,14 @@ export const ChatbotManager: React.FC = () => {
               <small className="cm-hint">Stored safely in your cloud database.</small>
             </div>
 
-            {apiProvider === 'custom' && (
+            {(apiProvider === 'custom' || apiProvider === 'openrouter') && (
               <div className="form-group">
-                <label>Custom API URL / Endpoint</label>
+                <label>API URL / Endpoint</label>
                 <input
                   type="text"
                   value={apiUrl}
                   onChange={(e) => setApiUrl(e.target.value)}
-                  placeholder="https://api.yourdomain.com/v1/chat/completions"
+                  placeholder="https://openrouter.ai/api/v1/chat/completions"
                 />
               </div>
             )}

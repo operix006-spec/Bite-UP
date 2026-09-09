@@ -5,9 +5,14 @@ import { Logo } from '../common/Logo';
 interface ChatHeaderProps {
   onClose: () => void;
   title?: string;
+  subtitle?: string;
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({ onClose, title = 'BITE UP Assistant' }) => {
+export const ChatHeader: React.FC<ChatHeaderProps> = ({ 
+  onClose, 
+  title = 'BITE UP Assistant',
+  subtitle = 'جاهز لمساعدتك في اختيار حلاك الصحي' 
+}) => {
   return (
     <header className="chat-header">
       <div className="chat-header-brand">
@@ -23,7 +28,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ onClose, title = 'BITE U
               <span>AI</span>
             </span>
           </div>
-          <p className="chat-header-subtext">Here to help you choose your next bite.</p>
+          <p className="chat-header-subtext">{subtitle}</p>
         </div>
       </div>
 

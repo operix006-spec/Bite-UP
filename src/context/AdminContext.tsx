@@ -58,10 +58,26 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const cachedContent = getCached<SiteContent>(CACHE_KEYS.content, defaultContent);
   const cachedLocs = getCached<Location[]>(CACHE_KEYS.locations, initialLocations);
 
+  // Auto-upgrade chatbot settings if empty or unconfigured or using old prompt
+  const initialContentData = { ...defaultContent, ...cachedContent.data };
+  if (!initialContentData.chatbotApiKey || initialContentData.chatbotApiKey.trim() === '') {
+    initialContentData.chatbotApiKey = defaultContent.chatbotApiKey;
+    initialContentData.chatbotApiProvider = defaultContent.chatbotApiProvider;
+    initialContentData.chatbotModel = defaultContent.chatbotModel;
+    initialContentData.chatbotApiUrl = defaultContent.chatbotApiUrl;
+  }
+  if (!initialContentData.chatbotSystemPrompt || initialContentData.chatbotSystemPrompt.includes('استخدم الإيموجي') || !initialContentData.chatbotSystemPrompt.includes('منع استخدام الإيموجي')) {
+    initialContentData.chatbotSystemPrompt = defaultContent.chatbotSystemPrompt;
+    initialContentData.chatbotKnowledgeBase = defaultContent.chatbotKnowledgeBase;
+    initialContentData.chatbotQuickSuggestions = defaultContent.chatbotQuickSuggestions;
+    initialContentData.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
+    initialContentData.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
+  }
+
   const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
 
   const [products, setProductsState] = useState<Product[]>(cachedProds.data);
-  const [siteContent, setSiteContentState] = useState<SiteContent>(cachedContent.data);
+  const [siteContent, setSiteContentState] = useState<SiteContent>(initialContentData);
   const [locations, setLocationsState] = useState<Location[]>(cachedLocs.data);
   // If we already have cached edits, show them instantly (loading = false).
   // If first visit without cache, show brief loading until Supabase completes (loading = true).
@@ -159,6 +175,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             (safeContent as any)[key] = (defaultContent as any)[key] || '';
           }
         });
+
+        if (!safeContent.chatbotApiKey || safeContent.chatbotApiKey.trim() === '') {
+          safeContent.chatbotApiKey = defaultContent.chatbotApiKey;
+          safeContent.chatbotApiProvider = defaultContent.chatbotApiProvider;
+          safeContent.chatbotModel = defaultContent.chatbotModel;
+          safeContent.chatbotApiUrl = defaultContent.chatbotApiUrl;
+        }
+
+        if (!safeContent.chatbotSystemPrompt || safeContent.chatbotSystemPrompt.includes('استخدم الإيموجي') || !safeContent.chatbotSystemPrompt.includes('منع استخدام الإيموجي')) {
+          safeContent.chatbotSystemPrompt = defaultContent.chatbotSystemPrompt;
+          safeContent.chatbotKnowledgeBase = defaultContent.chatbotKnowledgeBase;
+          safeContent.chatbotQuickSuggestions = defaultContent.chatbotQuickSuggestions;
+          safeContent.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
+          safeContent.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
+        }
 
         setProducts(safeProducts as Product[]);
         setLocations(safeLocations as Location[]);

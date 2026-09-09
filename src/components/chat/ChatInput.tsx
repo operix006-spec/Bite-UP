@@ -45,7 +45,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
           ref={inputRef}
           type="text"
           className="chat-text-input"
-          placeholder="Ask about BITE UP..."
+          placeholder="اسأل عن أي صنف، السعرات، أو التوصيل... | Ask anything..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -62,7 +62,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
         </button>
       </div>
       <div className="chat-input-footer-hint">
-        <span>Press <strong>Enter</strong> to send</span>
+        <span>اضغط <strong>Enter</strong> للإرسال</span>
       </div>
     </form>
   );
