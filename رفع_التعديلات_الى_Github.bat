@@ -4,7 +4,7 @@ chcp 65001 > nul
 cd /d "%~dp0"
 
 echo =========================================================
-echo       BITE UP - رفع تحديثات الذكاء الاصطناعي إلى GitHub
+echo       BITE UP - رفع كافة التعديلات إلى GitHub
 echo =========================================================
 echo.
 
@@ -15,48 +15,54 @@ if %ERRORLEVEL% neq 0 (
     exit /b 1
 )
 
+:: إزالة الملفات الكبيرة غير المرغوبة من التتبع إن وجدت
+git rm --cached cloudflared.exe 2>nul
+
+echo [1/4] جاري التحقق من المستودع والفرع (Branch: main)...
 if not exist ".git" (
-    echo [1/4] جاري تهيئة مستودع Git وربطه بمستودع GitHub...
     git init
     git branch -M main
     git remote add origin https://github.com/operix006-spec/Bite-UP.git
-    echo [2/4] جاري جلب بيانات المستودع لمطابقة السجل...
-    git fetch origin main
-    git reset --soft origin/main
 ) else (
-    echo [1/4] المستودع مهيأ، جاري ضبط الرابط...
-    git remote set-url origin https://github.com/operix006-spec/Bite-UP.git
+    git remote set-url origin https://github.com/operix006-spec/Bite-UP.git 2>nul || git remote add origin https://github.com/operix006-spec/Bite-UP.git
     git branch -M main
 )
 
 echo.
-echo [2/4] جاري تجهيز الملفات المعدلة...
+echo [2/4] جاري إضافة كافة الملفات والتعديلات...
 git add -A
 
 echo.
-echo [3/4] جاري تسجيل التعديلات (Commit)...
-git commit -m "feat: integrate OpenRouter AI chatbot with strict no-emoji menu training"
+echo [3/4] تسجيل التعديلات (Commit)...
+set /p commit_msg="اكتب وصف التعديل (أو اضغط Enter للافتراضي): "
+if "%commit_msg%"=="" set commit_msg=Update Bite UP project and features
+
+git commit -m "%commit_msg%"
 
 echo.
 echo [4/4] جاري الرفع إلى GitHub...
-git push origin main
+git push -u origin main
 
 if %ERRORLEVEL% equ 0 (
     echo.
     echo =========================================================
-    echo       تهانينا! تم رفع التعديلات بنجاح إلى GitHub
+    echo       تهانينا! تم رفع كافة التعديلات بنجاح إلى GitHub:
     echo       https://github.com/operix006-spec/Bite-UP
     echo =========================================================
 ) else (
     echo.
-    echo [تنبيه]: جاري معالجة اختلاف السجل والرفع الفوري...
-    git fetch origin main
-    git push -u origin main --force
+    echo [تنبيه]: قد يتطلب الرفع مزامنة السجل مع GitHub...
+    git pull origin main --rebase
+    git push -u origin main
     if %ERRORLEVEL% equ 0 (
         echo.
         echo =========================================================
-        echo       تم الرفع بنجاح بعد المزامنة!
+        echo       تمت المزامنة والرفع بنجاح!
+        echo       https://github.com/operix006-spec/Bite-UP
         echo =========================================================
+    ) else (
+        echo.
+        echo إذا استمرت المشكلة، يرجى التأكد من تسجيل دخولك في Git أو استخدام Personal Access Token الخاص بك.
     )
 )
 
