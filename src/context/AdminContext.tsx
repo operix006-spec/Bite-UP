@@ -69,12 +69,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   if (!initialContentData.chatbotApiUrl || !initialContentData.chatbotApiUrl.endsWith('/chat/completions')) {
     initialContentData.chatbotApiUrl = defaultContent.chatbotApiUrl;
   }
-  if (!initialContentData.chatbotSystemPrompt || initialContentData.chatbotSystemPrompt.includes('استخدم الإيموجي') || !initialContentData.chatbotSystemPrompt.includes('منع استخدام الإيموجي')) {
+  if (!initialContentData.chatbotSystemPrompt || !initialContentData.chatbotSystemPrompt.includes('تحدث دائماً بلغة العميل')) {
     initialContentData.chatbotSystemPrompt = defaultContent.chatbotSystemPrompt;
     initialContentData.chatbotKnowledgeBase = defaultContent.chatbotKnowledgeBase;
     initialContentData.chatbotQuickSuggestions = defaultContent.chatbotQuickSuggestions;
     initialContentData.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
     initialContentData.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
+    initialContentData.chatbotAssistantName = defaultContent.chatbotAssistantName;
   }
 
   const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
@@ -190,12 +191,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           safeContent.chatbotApiUrl = defaultContent.chatbotApiUrl;
         }
 
-        if (!safeContent.chatbotSystemPrompt || safeContent.chatbotSystemPrompt.includes('استخدم الإيموجي') || !safeContent.chatbotSystemPrompt.includes('منع استخدام الإيموجي')) {
+        if (!safeContent.chatbotSystemPrompt || !safeContent.chatbotSystemPrompt.includes('تحدث دائماً بلغة العميل')) {
           safeContent.chatbotSystemPrompt = defaultContent.chatbotSystemPrompt;
           safeContent.chatbotKnowledgeBase = defaultContent.chatbotKnowledgeBase;
           safeContent.chatbotQuickSuggestions = defaultContent.chatbotQuickSuggestions;
           safeContent.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
           safeContent.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
+          safeContent.chatbotAssistantName = defaultContent.chatbotAssistantName;
         }
 
         setProducts(safeProducts as Product[]);

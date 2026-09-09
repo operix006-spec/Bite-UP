@@ -139,6 +139,11 @@ const BUILTIN_BACKEND_KEY = ['sk', 'or', 'v1', 'c654e6cf732a3009ca24a6869bc44471
     let replyText = '';
     let lastError = '';
 
+    const hasArabic = /[\u0600-\u06FF]/.test(userText);
+    const languageDirective = hasArabic
+      ? `CRITICAL LANGUAGE DIRECTIVE: The user asked in ARABIC ("${userText}"). You MUST respond entirely in polite, natural Jordanian Arabic. Never use emojis or smilies.`
+      : `CRITICAL LANGUAGE DIRECTIVE: The user asked in ENGLISH ("${userText}"). You MUST respond 100% in pure ENGLISH. Do NOT use any Arabic words or Arabic script. Provide clear, accurate macros, nutrition advice, and product recommendations in fluent English. Never use emojis or smilies.`;
+
     // Call OpenRouter with candidate models
     for (const modelName of candidateModels) {
       try {
@@ -157,7 +162,7 @@ const BUILTIN_BACKEND_KEY = ['sk', 'or', 'v1', 'c654e6cf732a3009ca24a6869bc44471
             messages: [
               {
                 role: 'system',
-                content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\n=== LIVE STORE KNOWLEDGE BASE (SUPABASE DATABASE) ===\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
+                content: `${languageDirective}\n\n${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\n=== LIVE STORE KNOWLEDGE BASE (SUPABASE DATABASE) ===\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}\n\nFINAL REMINDER: You must formulate your entire response in ${hasArabic ? 'Arabic' : 'English'}. Never use any emojis or smilies.`
               },
               ...messages.slice(-6).map((m) => ({
                 role: m.sender === 'user' ? 'user' : 'assistant',
@@ -204,13 +209,21 @@ const BUILTIN_BACKEND_KEY = ['sk', 'or', 'v1', 'c654e6cf732a3009ca24a6869bc44471
         }
       ]);
     } else {
-      let userErrMsg = 'عذراً، تعذر الاتصال بسيرفر الذكاء الاصطناعي.';
+      let userErrMsg = hasArabic
+        ? 'عذراً، تعذر الاتصال بسيرفر المساعد الذكي حالياً.'
+        : 'Sorry, unable to connect to the AI assistant right now. Please try again.';
       if (lastError.includes('401') || lastError.includes('Key') || lastError.includes('auth') || lastError.includes('Unauthorized')) {
-        userErrMsg = 'مفتاح OpenRouter API Key تم إلغاؤه أو غير صالح. يرجى نسخ مفتاح جديد من تبويب OpenRouter المفتوح لديك.';
+        userErrMsg = hasArabic
+          ? 'مفتاح OpenRouter API Key غير صالح أو تم إلغاؤه.'
+          : 'AI service API key is currently invalid or unavailable.';
       } else if (lastError.includes('402') || lastError.includes('credits') || lastError.includes('balance')) {
-        userErrMsg = 'رصيد حساب OpenRouter غير كافٍ. يرجى شحن رصيد بسيط في OpenRouter.';
+        userErrMsg = hasArabic
+          ? 'رصيد حساب OpenRouter غير كافٍ.'
+          : 'AI service credit quota reached. Please try again shortly.';
       } else if (lastError) {
-        userErrMsg = `خطأ في سيرفر OpenRouter: ${lastError.slice(0, 120)}`;
+        userErrMsg = hasArabic
+          ? `خطأ في سيرفر المساعد: ${lastError.slice(0, 120)}`
+          : `AI service error: ${lastError.slice(0, 120)}`;
       }
 
       setMessages((prev) => [
