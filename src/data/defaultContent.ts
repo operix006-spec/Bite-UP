@@ -163,7 +163,7 @@ export const defaultContent: SiteContent = {
   chatbotWelcomeHeading: "أهلاً بك في BITE UP",
   chatbotWelcomeSubtext: "حلى صحي، غني بالبروتين، وبدون سكر مضاف. كيف يمكنني مساعدتك اليوم؟",
   chatbotApiProvider: "openrouter",
-  chatbotApiKey: "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",
+  chatbotApiKey: "",
   chatbotModel: "google/gemini-2.0-flash-001",
   chatbotApiUrl: "https://openrouter.ai/api/v1/chat/completions",
   chatbotTemperature: "0.7",

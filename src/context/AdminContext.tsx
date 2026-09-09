@@ -66,6 +66,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     initialContentData.chatbotModel = defaultContent.chatbotModel;
     initialContentData.chatbotApiUrl = defaultContent.chatbotApiUrl;
   }
+  if (!initialContentData.chatbotApiUrl || !initialContentData.chatbotApiUrl.endsWith('/chat/completions')) {
+    initialContentData.chatbotApiUrl = defaultContent.chatbotApiUrl;
+  }
   if (!initialContentData.chatbotSystemPrompt || initialContentData.chatbotSystemPrompt.includes('استخدم الإيموجي') || !initialContentData.chatbotSystemPrompt.includes('منع استخدام الإيموجي')) {
     initialContentData.chatbotSystemPrompt = defaultContent.chatbotSystemPrompt;
     initialContentData.chatbotKnowledgeBase = defaultContent.chatbotKnowledgeBase;
@@ -180,6 +183,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           safeContent.chatbotApiKey = defaultContent.chatbotApiKey;
           safeContent.chatbotApiProvider = defaultContent.chatbotApiProvider;
           safeContent.chatbotModel = defaultContent.chatbotModel;
+          safeContent.chatbotApiUrl = defaultContent.chatbotApiUrl;
+        }
+        if (!safeContent.chatbotApiUrl || !safeContent.chatbotApiUrl.endsWith('/chat/completions')) {
           safeContent.chatbotApiUrl = defaultContent.chatbotApiUrl;
         }
 
