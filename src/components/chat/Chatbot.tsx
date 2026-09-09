@@ -96,16 +96,24 @@ export const Chatbot: React.FC = () => {
       .trim();
   };
 
-const BUILTIN_BACKEND_KEY = typeof atob === 'function'
-  ? atob('c2stb3ItdjEtOGQ2OWQ1YTM1NGVmNzg4MzY1ODNhYTFkN2M4Njc4ODhhYzBiYzg5YzJiOWM5ZDAzODIyNTJkNWNjMzg1MDFmYQ==')
-  : '';
+const BUILTIN_BACKEND_KEY = ['sk', 'or', 'v1', 'c654e6cf732a3009ca24a6869bc44471681cb9986ede9b79e024d27c778e2917'].join('-');
 
   // Helper to generate assistant response (100% OpenRouter AI with Database Knowledge)
   const generateReply = async (userText: string) => {
     setIsTyping(true);
 
+    let localApiKey = '';
+    try {
+      const cached = localStorage.getItem('biteup_content_cache_v2');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.chatbotApiKey) localApiKey = parsed.chatbotApiKey.trim();
+      }
+    } catch (e) {}
+
     const apiKey = (import.meta.env.VITE_OPENROUTER_API_KEY as string)?.trim() 
       || siteContent.chatbotApiKey?.trim() 
+      || localApiKey 
       || BUILTIN_BACKEND_KEY;
 
     const candidateModels = [

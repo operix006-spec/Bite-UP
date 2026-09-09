@@ -179,8 +179,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           }
         });
 
+        // Preserve cached chatbotApiKey if cloud doesn't have it
         if (!safeContent.chatbotApiKey || safeContent.chatbotApiKey.trim() === '') {
-          safeContent.chatbotApiKey = defaultContent.chatbotApiKey;
+          safeContent.chatbotApiKey = cachedContent.data?.chatbotApiKey || defaultContent.chatbotApiKey;
           safeContent.chatbotApiProvider = defaultContent.chatbotApiProvider;
           safeContent.chatbotModel = defaultContent.chatbotModel;
           safeContent.chatbotApiUrl = defaultContent.chatbotApiUrl;

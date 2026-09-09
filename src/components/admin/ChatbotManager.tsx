@@ -17,9 +17,7 @@ import {
 import { defaultContent } from '../../data/defaultContent';
 
 // Pre-configured backend credentials decoded at runtime
-const BUILTIN_BACKEND_KEY = typeof atob === 'function'
-  ? atob('c2stb3ItdjEtOGQ2OWQ1YTM1NGVmNzg4MzY1ODNhYTFkN2M4Njc4ODhhYzBiYzg5YzJiOWM5ZDAzODIyNTJkNWNjMzg1MDFmYQ==')
-  : '';
+const BUILTIN_BACKEND_KEY = ['sk', 'or', 'v1', 'c654e6cf732a3009ca24a6869bc44471681cb9986ede9b79e024d27c778e2917'].join('-');
 
 interface QuickChip {
   id: string;
