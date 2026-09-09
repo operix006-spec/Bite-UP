@@ -100,7 +100,7 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
   ? atob('c2stb3ItdjEtOGQ2OWQ1YTM1NGVmNzg4MzY1ODNhYTFkN2M4Njc4ODhhYzBiYzg5YzJiOWM5ZDAzODIyNTJkNWNjMzg1MDFmYQ==')
   : '';
 
-  // Helper to generate assistant response (OpenRouter / Real API with fallback)
+  // Helper to generate assistant response (100% OpenRouter AI with Database Knowledge)
   const generateReply = async (userText: string) => {
     setIsTyping(true);
 
@@ -108,30 +108,35 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
       || siteContent.chatbotApiKey?.trim() 
       || BUILTIN_BACKEND_KEY;
 
-    // 1. Try real AI API
-    if (apiKey && apiKey.length > 10) {
-      try {
-        const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        };
+    const candidateModels = [
+      'google/gemini-2.0-flash-001',
+      'google/gemini-flash-1.5',
+      'openai/gpt-4o-mini',
+      'meta-llama/llama-3.3-70b-instruct:free',
+      'google/gemini-2.0-flash-lite-preview-02-05:free'
+    ];
 
-        let response = await fetch(endpoint, {
+    let replyText = '';
+
+    // Call OpenRouter with candidate models
+    for (const modelName of candidateModels) {
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
-          headers,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://biteup.jo',
+            'X-Title': 'BITE UP Protein Desserts'
+          },
           body: JSON.stringify({
-            model: 'google/gemini-2.0-flash-001',
-            models: [
-              'google/gemini-2.0-flash-001',
-              'meta-llama/llama-3.3-70b-instruct:free'
-            ],
-            temperature: parseFloat(siteContent.chatbotTemperature || '0.7'),
-            max_tokens: parseInt(siteContent.chatbotMaxTokens || '800'),
+            model: modelName,
+            temperature: 0.7,
+            max_tokens: 800,
             messages: [
               {
                 role: 'system',
-                content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
+                content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\n=== LIVE STORE KNOWLEDGE BASE (SUPABASE DATABASE) ===\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
               },
               ...messages.slice(-6).map((m) => ({
                 role: m.sender === 'user' ? 'user' : 'assistant',
@@ -142,192 +147,52 @@ const BUILTIN_BACKEND_KEY = typeof atob === 'function'
           })
         });
 
-        // If primary call failed (e.g. 402 no credits), auto-retry with 100% free model
-        if (!response.ok) {
-          console.warn('OpenRouter primary model failed, retrying with free model...');
-          response = await fetch(endpoint, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              model: 'meta-llama/llama-3.3-70b-instruct:free',
-              temperature: 0.7,
-              max_tokens: 800,
-              messages: [
-                {
-                  role: 'system',
-                  content: `${siteContent.chatbotSystemPrompt || defaultContent.chatbotSystemPrompt}\n\nKNOWLEDGE BASE & STORE FACTS:\n${siteContent.chatbotKnowledgeBase || defaultContent.chatbotKnowledgeBase}`
-                },
-                ...messages.slice(-4).map((m) => ({
-                  role: m.sender === 'user' ? 'user' : 'assistant',
-                  content: m.text || ''
-                })),
-                { role: 'user', content: userText }
-              ]
-            })
-          });
-        }
-
         if (response.ok) {
           const data = await response.json();
-          const rawReply = data.choices?.[0]?.message?.content;
-          if (rawReply) {
-            const cleanReply = cleanNoEmoji(rawReply);
-            const matchedProduct = findProductMatch(cleanReply);
-
-            setMessages((prev) => [
-              ...prev,
-              {
-                id: 'asst-' + Date.now(),
-                sender: 'assistant',
-                text: cleanReply,
-                timestamp: new Date(),
-                product: matchedProduct
-              }
-            ]);
-            setIsTyping(false);
-            return;
+          const content = data.choices?.[0]?.message?.content;
+          if (content && content.trim()) {
+            replyText = content.trim();
+            break; // Successfully got dynamic answer from AI!
           }
         } else {
+          const errStatus = response.status;
           const errText = await response.text();
-          console.warn('OpenRouter/AI API error:', response.status, errText);
+          console.warn(`OpenRouter model ${modelName} returned status ${errStatus}:`, errText);
         }
       } catch (err) {
-        console.warn('AI API fetch issue, switching to dynamic menu engine:', err);
+        console.warn(`Network call failed for OpenRouter model ${modelName}:`, err);
       }
     }
 
-    // 2. Intelligent local engine utilizing trained menu & active products
-    setTimeout(() => {
-      setIsTyping(false);
-      const lower = userText.toLowerCase();
+    setIsTyping(false);
 
-      // Demo error state if user explicitly tests error
-      if (lower.includes('error') || lower.includes('fail')) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: 'err-' + Date.now(),
-            sender: 'assistant',
-            text: 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.',
-            timestamp: new Date(),
-            isError: true
-          }
-        ]);
-        return;
-      }
-
-      let replyText = '';
-      let recommendedProduct = findProductMatch(lower);
-
-      // FULL MENU QUERY: list all 13 items completely
-      if (lower.includes('منيو') || lower.includes('menu') || lower.includes('قائمة') || lower.includes('شو عندكم') || lower.includes('شو الاصناف') || lower.includes('شو الأصناف') || lower.includes('كل الاصناف') || lower.includes('جميع الاصناف')) {
-        replyText = `قائمة منتجات BITE UP كاملة:
-
-أولاً: بودينغ البروتين (سعر العلبة 1.75 دينار | 18 غرام بروتين صافي | بدون سكر مضاف):
-1. بودينغ براوني (Pudding Brownie): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-2. بودينغ كوكيز (Pudding Cookies): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-3. بودينغ باونتي (Pudding Bounty): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-4. بودينغ لوتس (Pudding Lotus): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-5. بودينغ أوريو (Pudding Oreo): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-6. بودينغ فيريرو (Pudding Ferrero): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-7. بودينغ سنيكرز (Pudding Snickers): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-8. بودينغ تيراميسو (Pudding Tiramisu): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-9. بودينغ بستاشيو (Pudding Pistachio): 245 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-10. بودينغ كيندر (Pudding Kinder): 345 سعرة حرارية | 18 غرام بروتين | 27 غرام كارب | 3 غرام دهون
-
-ثانياً: كاسات الجرانولا المقرمشة (سعر العلبة 2.00 دينار | 16 غرام بروتين | سناك صحي):
-1. جرانولا مكسرات (Granola Nuts): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | بدون سكر مضاف
-2. جرانولا أناناس (Granola Pineapple): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | بدون سكر مضاف
-3. جرانولا فراولة (Granola Strawberry): 205 سعرة حرارية | 16 غرام بروتين | 27 غرام كارب | 7 غرام دهون صحية | سكر طبيعي من الفواكه فقط
-
-يمكنك طلب أي صنف مباشرة من الموقع والتوصيل متوفر في كافة مناطق عمّان.`;
-      } else if (lower.includes('كيك') || lower.includes('كعك') || lower.includes('cake') || lower.includes('حلو') || lower.includes('حلويات') || lower.includes('شوكولاته') || lower.includes('شوكولا') || lower.includes('تشيز كيك')) {
-        replyText = `نحن في BITE UP متخصصون في حلى بودينغ البروتين الفاخر والجرانولا المقرمشة كبديل صحي وذكي للكيك والحلويات التقليدية، بدون سكر مضاف نهائياً وغني بالبروتين النقي.
-إذا كنت تشتهي طعم الكيك أو الشوكولاتة الغنية، نرشح لك:
-• بودينغ براوني (Pudding Brownie): طعم براوني شوكولاتة بلجيكية غنية مع 18 غرام بروتين صافي.
-• بودينغ كوكيز (Pudding Cookies): بطعم الفانيليا وقطع الكوكيز المقرمشة بدون سكر مضاف.
-• بودينغ تيراميسو (Pudding Tiramisu): لمحبي نكهة القهوة والتيراميسو الإيطالي بـ 245 سعرة فقط.`;
-        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
-      } else if (lower.includes('شو بتنصح') || lower.includes('نصيحة') || lower.includes('ازكى') || lower.includes('أزكى') || lower.includes('افضل') || lower.includes('أفضل') || lower.includes('اقتراح') || lower.includes('recommend')) {
-        replyText = `أكثر أصناف BITE UP طلباً وتقييماً:
-1. بودينغ براوني: الخيار الأول لعشاق الشوكولاتة الغنية والبروتين العالي (18 غرام).
-2. بودينغ بستاشيو: نكهة الفستق الحلبي الملكية، قوام كريمي لا يقاوم.
-3. بودينغ باونتي: لعشاق جوز الهند والشوكولاتة بـ 245 سعرة فقط وبدون سكر مضاف.
-4. كاسات جرانولا مكسرات: سناك صحي ومقرمش مثالي قبل أو بعد التمرين.
-هل تحب تجربة الشوكولاتة أم نكهات المكسرات والفواكه؟`;
-        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
-      } else if (lower.includes('مين') || lower.includes('شو بايت اب') || lower.includes('عنكم') || lower.includes('شو بتعملو') || lower.includes('about')) {
-        replyText = `BITE UP (بايت أب) هي علامة أردنية متخصصة في ابتكار حلويات وسناكات صحية غنية بالبروتين وبدون أي سكر مضاف، لمساعدتك على الاستمتاع بألذ حلى مع المحافظة على دايتك وصحتك في عمّان. شعارنا: Crave Better. Bite UP.`;
-        recommendedProduct = availableProducts[0];
-      } else if (lower.includes('باذنجان') || lower.includes('شاورما') || lower.includes('برجر') || lower.includes('بيتزا') || lower.includes('دجاج') || lower.includes('لحم') || lower.includes('وجبات') || lower.includes('طبيخ') || lower.includes('خضار')) {
-        replyText = `أهلاً بك! في BITE UP نحن متخصصون حصراً في حلويات وسناكات البروتين الصحية (بودينغ البروتين والجرانولا المقرمشة) الخالية من السكر المضاف، ولا تتوفر لدينا أي وجبات مطبوخة أو خضروات مثل الباذنجان.
-إذا كنت تبحث عن سناك صحي غني بالبروتين ولذيذ، يسعدنا أن نرشح لك بودينغ البراوني الفاخر (18 غرام بروتين) أو كاسات جرانولا المكسرات!`;
-        recommendedProduct = availableProducts.find(p => p.id === 'p-brownie') || availableProducts[0];
-      } else if (lower.includes('بودينغ') || lower.includes('بودنج') || lower.includes('pudding')) {
-        // GENERAL PUDDING BREAKDOWN
-        replyText = `تفاصيل بودينغ البروتين من BITE UP:
-• سعر العلبة: 1.75 دينار أردني
-• البروتين: 18 غرام واي بروتين نقي ومعزول (Whey Isolate)
-• السكر: بدون أي سكر مضاف نهائياً
-• النكهات المتوفرة (10 نكهات): براوني، كوكيز، باونتي، لوتس، أوريو، فيريرو، سنيكرز، تيراميسو، بستاشيو، وكيندر.
-• السعرات: نكهات خفيفة (245 سعرة) مثل باونتي ولوتس وتيراميسو، ونكهات غنية (345 سعرة) مثل براوني وأوريو وكوكيز.
-هل تحب معرفة ماكروز نكهة محددة بالتفصيل؟`;
-        recommendedProduct = recommendedProduct || availableProducts.find(p => p.id === 'p-brownie');
-      } else if (lower.includes('جرانولا') || lower.includes('granola')) {
-        // GENERAL GRANOLA BREAKDOWN
-        replyText = `تفاصيل كاسات الجرانولا المقرمشة:
-• سعر العلبة: 2.00 دينار أردني
-• البروتين: 16 غرام بروتين
-• السعرات: 205 سعرة حرارية فقط
-• الأصناف المتوفرة: جرانولا مكسرات، جرانولا أناناس، وجرانولا فراولة طبيعية
-• سناك صحي ومثالي قبل أو بعد التمرين أو كفطور خفيف وغني بالطاقة.`;
-        recommendedProduct = recommendedProduct || availableProducts.find(p => p.id === 'g-nuts');
-      } else if (recommendedProduct && (lower.includes('غرام') || lower.includes('جرام') || lower.includes('تفاصيل') || lower.includes('ماكروز') || lower.includes('كم') || lower.includes('سعرات'))) {
-        // DETAILED GRAMS FOR SPECIFIC ITEM
-        replyText = `تفاصيل ${recommendedProduct.name} بدقة الغرامات والماكروز:
-• السعر: ${recommendedProduct.price.toFixed(2)} دينار أردني (JD)
-• السعرات الحرارية: ${recommendedProduct.calories} سعرة حرارية
-• البروتين: ${recommendedProduct.protein} غرام صافي (واي بروتين معزول Whey Isolate)
-• الكاربوهيدرات: ${recommendedProduct.carbs} غرام
-• الدهون: ${recommendedProduct.fat} غرام
-• السكر: ${recommendedProduct.sugarNote || 'بدون سكر مضاف نهائياً'}
-• طريقة الحفظ: يحفظ مبرداً في الثلاجة بدرجة حرارة بين 2 إلى 4 مئوية، ومدة الصلاحية 5 أيام من الإنتاج.`;
-      } else if (lower.includes('سعر') || lower.includes('اسعار') || lower.includes('أسعار') || lower.includes('price')) {
-        replyText = `قائمة أسعار BITE UP المعتمدة:
-• جميع علب بودينغ البروتين (10 نكهات): 1.75 دينار أردني (JD) مع 18 غرام بروتين صافي وبدون سكر مضاف.
-• جميع كاسات الجرانولا المقرمشة: 2.00 دينار أردني (JD) مع 16 غرام بروتين.
-هل ترغب بمعرفة تفاصيل الماكروز والغرامات لأي صنف معين؟`;
-      } else if (lower.includes('سعرات') || lower.includes('كالوري') || lower.includes('دايت') || lower.includes('calorie') || lower.includes('تنشيف')) {
-        replyText = `إذا كنت تبحث عن أقل سعرات حرارية، خياراتنا من بودينغ (باونتي، لوتس، فيريرو، سنيكرز، تيراميسو، أو بستاشيو) تحتوي على 245 سعرة حرارية فقط مع 18 غرام بروتين نقي وبدون سكر مضاف.`;
-        recommendedProduct = availableProducts.find((p) => p.id === 'p-bounty') || availableProducts[0];
-      } else if (lower.includes('بروتين') || lower.includes('protein') || lower.includes('عضل') || lower.includes('تضخيم')) {
-        replyText = `جميع علب بودينغ البروتين تحتوي على 18 غرام واي بروتين صافي (Whey Protein Isolate) عالي النقاء وخفيف على الهضم، وبدون سكر مضاف نهائياً. نرشح لك بودينغ البراوني الفاخر أو بودينغ الكوكيز.`;
-        recommendedProduct = availableProducts.find((p) => p.id === 'p-brownie') || availableProducts[0];
-      } else if (lower.includes('حفظ') || lower.includes('صلاحية') || lower.includes('ثلاجة') || lower.includes('تخزين')) {
-        replyText = `تحفظ جميع منتجات بايت أب مبردة في الثلاجة بين 2 إلى 4 درجات مئوية، ويفضل استهلاكها طازجة خلال 5 أيام من تاريخ الإنتاج للاستمتاع بأعلى جودة وطراوة.`;
-      } else if (lower.includes('توصيل') || lower.includes('طلب') || lower.includes('وين') || lower.includes('مكان') || lower.includes('amman') || lower.includes('عمّان')) {
-        replyText = `التوصيل متاح لكافة مناطق عمّان. يمكنك إضافة أي صنف إلى السلة في الموقع وإتمام الطلب عبر الواتساب. تتوفر منتجاتنا أيضاً في أكثر من 15 سوبرماركت شريك في مرج الحمام، داحية الرشيد، الجبيهة، صويلح، وخلدا.`;
-      } else if (lower.includes('سكر') || lower.includes('sugar')) {
-        replyText = `جميع منتجات BITE UP خالية تماماً من أي سكر مضاف أو مكرر. نعتمد على المحليات الطبيعية، وسكر الفواكه الطبيعي في جرانولا الفراولة فقط.`;
-      } else {
-        replyText = `أهلاً بك في BITE UP! نقدم 10 نكهات من بودينغ البروتين الغني (1.75 دينار | 18 غرام بروتين نقي وبدون سكر مضاف) و3 نكهات جرانولا مقرمشة (2.00 دينار | 16 غرام بروتين).
-يمكنك سؤالي عن المنيو كاملة، السعرات والماكروز، التوصيل في عمّان، أو ترشيح الصنف الأنسب لهدفك!`;
-        recommendedProduct = recommendedProduct || availableProducts[0];
-      }
-
-      const finalText = cleanNoEmoji(replyText);
+    if (replyText) {
+      const cleanReply = cleanNoEmoji(replyText);
+      const matchedProduct = findProductMatch(cleanReply);
 
       setMessages((prev) => [
         ...prev,
         {
           id: 'asst-' + Date.now(),
           sender: 'assistant',
-          text: finalText,
+          text: cleanReply,
           timestamp: new Date(),
-          product: recommendedProduct
+          product: matchedProduct
         }
       ]);
-    }, 500);
+    } else {
+      // In case OpenRouter completely fails on all models, notify with retry
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: 'err-' + Date.now(),
+          sender: 'assistant',
+          text: 'عذراً، حدث ضغط مؤقت على سيرفر الذكاء الاصطناعي. يرجى إعادة إرسال سؤالك وسأجيبك فوراً.',
+          timestamp: new Date(),
+          isError: true
+        }
+      ]);
+    }
   };
 
   const handleSendMessage = (text: string) => {
