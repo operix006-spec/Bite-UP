@@ -4,20 +4,13 @@ import type { Location } from '../data/locations';
 import { useAdmin } from '../context/AdminContext';
 import './About.css';
 
-type LocationCategory = 'all' | 'supermarket' | 'coffee-spot';
-
 export const About: React.FC = () => {
   const { siteContent, locations } = useAdmin();
-  const [activeFilter, setActiveFilter] = useState<LocationCategory>('all');
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
 
-  const filteredLocations = locations.filter(
-    (loc) => activeFilter === 'all' || loc.category === activeFilter
-  );
-
   // Group locations by area
-  const groupedLocations = filteredLocations.reduce((acc, loc) => {
-    const areaKey = loc.area;
+  const groupedLocations = locations.reduce((acc, loc) => {
+    const areaKey = loc.area || 'Other Locations';
     if (!acc[areaKey]) {
       acc[areaKey] = [];
     }
@@ -36,12 +29,12 @@ export const About: React.FC = () => {
     }));
   };
 
-  // If a filter leaves only 1 area, auto-expand it for convenience
+  // If only 1 area exists, auto-expand it for convenience
   useEffect(() => {
     if (areaKeys.length === 1) {
       setExpandedAreas({ [areaKeys[0]]: true });
     }
-  }, [activeFilter, areaKeys.length]);
+  }, [areaKeys.length]);
 
   return (
     <div className="about-page">
@@ -136,28 +129,6 @@ export const About: React.FC = () => {
             </p>
           </div>
 
-          {/* Minimal Editorial Filter Strip */}
-          <div className="locations-filter-strip">
-            <button 
-              className={`filter-text-btn ${activeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('all')}
-            >
-              ALL LOCATIONS ({locations.length})
-            </button>
-            <button 
-              className={`filter-text-btn ${activeFilter === 'supermarket' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('supermarket')}
-            >
-              SUPERMARKETS ({locations.filter(l => l.category === 'supermarket').length})
-            </button>
-            <button 
-              className={`filter-text-btn ${activeFilter === 'coffee-spot' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('coffee-spot')}
-            >
-              COFFEE SPOTS ({locations.filter(l => l.category === 'coffee-spot').length})
-            </button>
-          </div>
-
           {/* Area Accordion List */}
           <div className="area-accordion-list">
             {areaKeys.map((areaName) => {
@@ -202,9 +173,11 @@ export const About: React.FC = () => {
                           <div className="spot-row-item" key={spot.id}>
                             <div className="spot-info">
                               <span className="spot-title">{spot.name}</span>
-                              <span className={`spot-badge ${spot.category}`}>
-                                {spot.category === 'coffee-spot' ? 'Coffee Spot' : 'Supermarket'}
-                              </span>
+                              {spot.note && (
+                                <span className="spot-note-text">
+                                  {spot.note}
+                                </span>
+                              )}
                             </div>
                             <a
                               href={spot.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.area + ' Amman')}`}

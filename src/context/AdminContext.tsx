@@ -178,13 +178,17 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }));
 
         // NORMALIZE LOCATIONS
-        const safeLocations = (finalLocations.length > 0 ? finalLocations : initialLocations).map((l: any) => ({
-          ...l,
-          name: l.name || '',
-          area: l.area || '',
-          city: l.city || 'Amman',
-          category: l.category || 'supermarket'
-        }));
+        const safeLocations = (finalLocations.length > 0 ? finalLocations : initialLocations).map((l: any) => {
+          const isLegacyCategory = l.category === 'supermarket' || l.category === 'coffee-spot' || l.category === 'retail';
+          return {
+            ...l,
+            name: l.name || '',
+            area: l.area || '',
+            city: l.city || 'Amman',
+            note: l.note || (!isLegacyCategory ? l.category : '') || '',
+            category: l.category || 'retail'
+          };
+        });
 
         // NORMALIZE CONTENT: guarantee every single field has a fallback to defaultContent
         const safeContent = { ...defaultContent, ...finalContent };
@@ -263,7 +267,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         name: l.name,
         area: l.area,
         city: l.city,
-        category: l.category,
+        category: l.note || l.category || 'retail',
         mapUrl: l.mapUrl || ''
       }));
       await supabase.from('locations').insert(locationsToInsert);
@@ -342,7 +346,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addLocation = async (loc: Location) => {
     try {
       setLocations(prev => [...prev, loc]); // Optimistic UI
-      await supabase.from('locations').insert(loc);
+      const dbPayload = {
+        id: loc.id,
+        name: loc.name,
+        area: loc.area,
+        city: loc.city,
+        category: loc.note || 'retail',
+        mapUrl: loc.mapUrl || ''
+      };
+      await supabase.from('locations').insert(dbPayload);
     } catch (e) {
       console.error(e);
     }
@@ -351,7 +363,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updateLocation = async (loc: Location) => {
     try {
       setLocations(prev => prev.map(l => l.id === loc.id ? loc : l)); // Optimistic UI
-      await supabase.from('locations').update(loc).eq('id', loc.id);
+      const dbPayload = {
+        id: loc.id,
+        name: loc.name,
+        area: loc.area,
+        city: loc.city,
+        category: loc.note || 'retail',
+        mapUrl: loc.mapUrl || ''
+      };
+      await supabase.from('locations').update(dbPayload).eq('id', loc.id);
     } catch (e) {
       console.error(e);
     }

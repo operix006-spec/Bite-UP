@@ -31,7 +31,7 @@ export const AboutManager: React.FC = () => {
   // Locations State
   const [isLocModalOpen, setIsLocModalOpen] = useState(false);
   const [editingLoc, setEditingLoc] = useState<Location | null>(null);
-  const initialLocState: Location = { id: '', name: '', area: '', city: 'Amman, Jordan', category: 'supermarket', mapUrl: '' };
+  const initialLocState: Location = { id: '', name: '', area: '', city: 'Amman, Jordan', note: '', mapUrl: '' };
   const [locForm, setLocForm] = useState<Location>(initialLocState);
 
   // --- CONTENT HANDLERS ---
@@ -234,7 +234,7 @@ export const AboutManager: React.FC = () => {
               <tr>
                 <th>Name</th>
                 <th>Area</th>
-                <th>Category</th>
+                <th>Note (Optional)</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -253,7 +253,15 @@ export const AboutManager: React.FC = () => {
                       {loc.area}
                     </span>
                   </td>
-                  <td><span style={{ padding: '0.2rem 0.5rem', background: loc.category === 'coffee-spot' ? 'var(--c-aqua)' : '#e2e8f0', borderRadius: '4px', fontSize: '0.8rem' }}>{loc.category}</span></td>
+                  <td>
+                    <span style={{
+                      fontSize: '0.85rem',
+                      color: loc.note ? 'var(--c-charcoal)' : 'var(--c-gray)',
+                      fontStyle: loc.note ? 'normal' : 'italic'
+                    }}>
+                      {loc.note || 'None'}
+                    </span>
+                  </td>
                   <td>
                     <div className="action-btns">
                       <button type="button" className="btn-edit" onClick={() => handleOpenLocModal(loc)}>EDIT</button>
@@ -360,11 +368,18 @@ export const AboutManager: React.FC = () => {
                 <input type="text" name="city" className="form-control" value={locForm.city} onChange={handleLocChange} required />
               </div>
               <div className="form-group">
-                <label>Category</label>
-                <select name="category" className="form-control" value={locForm.category} onChange={handleLocChange}>
-                  <option value="supermarket">Supermarket</option>
-                  <option value="coffee-spot">Coffee Spot</option>
-                </select>
+                <label>Note / Additional Details (Optional)</label>
+                <input
+                  type="text"
+                  name="note"
+                  className="form-control"
+                  value={locForm.note || ''}
+                  onChange={handleLocChange}
+                  placeholder="e.g. Inside Carrefour, Ground Floor, Opposite Pharmacy..."
+                />
+                <small style={{ color: 'var(--c-gray)', display: 'block', marginTop: '4px' }}>
+                  Optional details or landmark note shown to customers.
+                </small>
               </div>
               <div className="form-group">
                 <label>Google Maps URL (Optional)</label>

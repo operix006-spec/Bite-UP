@@ -178,9 +178,11 @@ export const Home: React.FC = () => {
               <div className="home-loc-card" key={loc.id}>
                 <div className="home-loc-top">
                   <span className="home-loc-area">{(loc.area || '').toUpperCase()}</span>
-                  <span className="home-loc-badge">
-                    {loc.category === 'coffee-spot' ? 'Coffee' : 'Supermarket'}
-                  </span>
+                  {loc.note && (
+                    <span className="home-loc-badge" style={{ background: 'rgba(101, 183, 187, 0.15)', color: 'var(--c-aqua-dark)' }}>
+                      {loc.note}
+                    </span>
+                  )}
                 </div>
                 <h3 className="home-loc-name">{loc.name}</h3>
                 <a

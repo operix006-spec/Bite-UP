@@ -443,6 +443,13 @@
   color: var(--c-dark);
 }
 
+.spot-note-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--c-gray);
+  margin-top: 1px;
+}
+
 .spot-badge {
   font-size: 0.6875rem;
   font-weight: 600;
