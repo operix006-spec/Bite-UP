@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAdmin } from '../context/AdminContext';
 import { ProductsManager } from '../components/admin/ProductsManager';
 import { CategoriesManager } from '../components/admin/CategoriesManager';
 import { HomeManager } from '../components/admin/HomeManager';
@@ -11,14 +10,6 @@ type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
 
 export const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('products');
-  const { resetToDefaults } = useAdmin();
-
-  const handleReset = () => {
-    if (window.confirm('Are you sure you want to reset all data back to the default code? This will delete all your local changes.')) {
-      resetToDefaults();
-      alert('Data reset to defaults.');
-    }
-  };
 
   return (
     <div className="admin-page">
@@ -27,11 +18,6 @@ export const Admin: React.FC = () => {
           <div>
             <h1>Control Panel</h1>
             <p className="admin-subtitle">Manage Menu Products, Website Copy, and AI Assistant Training</p>
-          </div>
-          <div className="admin-actions-top">
-            <button className="btn-danger" onClick={handleReset}>
-              RESET TO DEFAULTS
-            </button>
           </div>
         </header>
 
