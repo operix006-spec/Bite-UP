@@ -84,7 +84,18 @@ export interface SiteContent {
   chatbotSystemPrompt?: string;
   chatbotKnowledgeBase?: string;
   chatbotQuickSuggestions?: string;
+  menuCategories?: string;
 }
+
+export interface MenuCategory {
+  id: string;
+  name: string;
+}
+
+export const defaultMenuCategories: MenuCategory[] = [
+  { id: 'pudding', name: 'PROTEIN PUDDINGS' },
+  { id: 'granola', name: 'CRUNCHY GRANOLAS' }
+];
 
 export const defaultContent: SiteContent = {
   // --- HOME PAGE ---
@@ -349,4 +360,5 @@ export const defaultContent: SiteContent = {
     { id: 's4', label: 'Crunchy Granola Cups', prompt: 'Tell me about the granola flavors and how much protein they have' },
     { id: 's5', label: 'Delivery & Storage Guide', prompt: 'How should I store BITE UP cups and how does delivery work in Amman?' }
   ]),
+  menuCategories: JSON.stringify(defaultMenuCategories),
 };

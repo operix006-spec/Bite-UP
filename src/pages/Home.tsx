@@ -9,7 +9,7 @@ import './Home.css';
 
 export const Home: React.FC = () => {
   const { addItem } = useCart();
-  const { products, siteContent, locations } = useAdmin();
+  const { products, siteContent, locations, categories } = useAdmin();
 
   // 02. Featured Products: exactly 4 items
   const featuredIds = ['p-brownie', 'p-cookies', 'p-bounty', 'p-lotus'];
@@ -431,7 +431,9 @@ export const Home: React.FC = () => {
               </div>
 
               <div className="quick-view-details">
-                <span className="quick-view-category">{(quickViewProduct.category || '').toUpperCase()}</span>
+                <span className="quick-view-category">
+                  {(categories?.find(c => c.id === quickViewProduct.category)?.name || quickViewProduct.category || '').toUpperCase()}
+                </span>
                 <h2 className="quick-view-title">{quickViewProduct.name}</h2>
                 <div className="quick-view-price">{(Number(quickViewProduct.price) || 0).toFixed(2)} JD</div>
 

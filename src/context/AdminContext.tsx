@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { products as initialProducts } from '../data/products';
 import type { Product } from '../data/products';
-import { defaultContent } from '../data/defaultContent';
-import type { SiteContent } from '../data/defaultContent';
+import { defaultContent, defaultMenuCategories } from '../data/defaultContent';
+import type { SiteContent, MenuCategory } from '../data/defaultContent';
 import { locations as initialLocations } from '../data/locations';
 import type { Location } from '../data/locations';
 
@@ -11,12 +11,17 @@ interface AdminContextType {
   products: Product[];
   siteContent: SiteContent;
   locations: Location[];
+  categories: MenuCategory[];
   loading: boolean;
   updateProduct: (product: Product) => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
   reorderProducts: (products: Product[]) => Promise<void>;
   updateSiteContent: (content: SiteContent) => Promise<void>;
+  addCategory: (category: MenuCategory) => Promise<void>;
+  updateCategory: (oldId: string, updated: MenuCategory) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
+  reorderCategories: (categories: MenuCategory[]) => Promise<void>;
   addLocation: (loc: Location) => Promise<void>;
   updateLocation: (loc: Location) => Promise<void>;
   deleteLocation: (id: string) => Promise<void>;
@@ -76,6 +81,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     initialContentData.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
     initialContentData.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
     initialContentData.chatbotAssistantName = defaultContent.chatbotAssistantName;
+  }
+  if (!initialContentData.menuCategories) {
+    initialContentData.menuCategories = defaultContent.menuCategories;
   }
 
   const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
@@ -198,6 +206,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           safeContent.chatbotWelcomeHeading = defaultContent.chatbotWelcomeHeading;
           safeContent.chatbotWelcomeSubtext = defaultContent.chatbotWelcomeSubtext;
           safeContent.chatbotAssistantName = defaultContent.chatbotAssistantName;
+        }
+
+        if (!safeContent.menuCategories) {
+          safeContent.menuCategories = defaultContent.menuCategories;
         }
 
         setProducts(safeProducts as Product[]);
@@ -344,6 +356,70 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const categories: MenuCategory[] = React.useMemo(() => {
+    try {
+      if (siteContent.menuCategories) {
+        const parsed = JSON.parse(siteContent.menuCategories);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing menuCategories:', e);
+    }
+    return defaultMenuCategories;
+  }, [siteContent.menuCategories]);
+
+  const addCategory = async (cat: MenuCategory) => {
+    try {
+      const nextCats = [...categories, cat];
+      const newContent = { ...siteContent, menuCategories: JSON.stringify(nextCats) };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateCategory = async (oldId: string, updated: MenuCategory) => {
+    try {
+      const nextCats = categories.map(c => c.id === oldId ? updated : c);
+      const newContent = { ...siteContent, menuCategories: JSON.stringify(nextCats) };
+      await updateSiteContent(newContent);
+
+      // If ID changed, cascade update all products that used oldId
+      if (oldId !== updated.id) {
+        const updatedProducts = products.map(p => p.category === oldId ? { ...p, category: updated.id } : p);
+        setProducts(updatedProducts);
+        try {
+          await supabase.from('products').update({ category: updated.id }).eq('category', oldId);
+        } catch (err) {
+          console.error('Failed to cascade category change to products:', err);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const deleteCategory = async (id: string) => {
+    try {
+      const nextCats = categories.filter(c => c.id !== id);
+      const newContent = { ...siteContent, menuCategories: JSON.stringify(nextCats) };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const reorderCategories = async (newOrder: MenuCategory[]) => {
+    try {
+      const newContent = { ...siteContent, menuCategories: JSON.stringify(newOrder) };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const resetToDefaults = async () => {
     try {
       setLoading(true);
@@ -369,12 +445,17 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         products,
         siteContent,
         locations,
+        categories,
         loading,
         updateProduct,
         addProduct,
         deleteProduct,
         reorderProducts,
         updateSiteContent,
+        addCategory,
+        updateCategory,
+        deleteCategory,
+        reorderCategories,
         addLocation,
         updateLocation,
         deleteLocation,

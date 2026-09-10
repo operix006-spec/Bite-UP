@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useAdmin } from '../context/AdminContext';
 import { ProductsManager } from '../components/admin/ProductsManager';
+import { CategoriesManager } from '../components/admin/CategoriesManager';
 import { HomeManager } from '../components/admin/HomeManager';
 import { AboutManager } from '../components/admin/AboutManager';
 import { ChatbotManager } from '../components/admin/ChatbotManager';
 import './Admin.css';
 
-type Tab = 'products' | 'home' | 'about' | 'chatbot';
+type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
 
 export const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('products');
@@ -42,6 +43,12 @@ export const Admin: React.FC = () => {
             Products Manager
           </button>
           <button 
+            className={`admin-tab ${activeTab === 'categories' ? 'active' : ''}`}
+            onClick={() => setActiveTab('categories')}
+          >
+            Menu Categories
+          </button>
+          <button 
             className={`admin-tab ${activeTab === 'home' ? 'active' : ''}`}
             onClick={() => setActiveTab('home')}
           >
@@ -63,6 +70,7 @@ export const Admin: React.FC = () => {
 
         <div className="admin-content-area">
           {activeTab === 'products' && <ProductsManager />}
+          {activeTab === 'categories' && <CategoriesManager />}
           {activeTab === 'home' && <HomeManager />}
           {activeTab === 'about' && <AboutManager />}
           {activeTab === 'chatbot' && <ChatbotManager />}

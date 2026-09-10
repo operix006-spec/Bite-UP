@@ -4,14 +4,14 @@ import type { Product } from '../../data/products';
 import { ImageUpload } from './ImageUpload';
 
 export const ProductsManager: React.FC = () => {
-  const { products, addProduct, updateProduct, deleteProduct, reorderProducts } = useAdmin();
+  const { products, categories, addProduct, updateProduct, deleteProduct, reorderProducts } = useAdmin();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const initialFormState: Product = {
     id: '',
     name: '',
-    category: 'pudding',
+    category: categories[0]?.id || 'pudding',
     price: 0,
     calories: 0,
     protein: 0,
@@ -34,6 +34,7 @@ export const ProductsManager: React.FC = () => {
       setEditingProduct(null);
       setFormData({
         ...initialFormState,
+        category: categories[0]?.id || 'pudding',
         id: `p-${Date.now()}` // Generate temporary unique ID
       });
     }
@@ -132,7 +133,19 @@ export const ProductsManager: React.FC = () => {
                   <img src={product.image} alt={product.name} className="product-img-preview" />
                 </td>
                 <td><strong>{product.name}</strong></td>
-                <td style={{ textTransform: 'capitalize' }}>{product.category}</td>
+                <td>
+                  <span style={{ 
+                    display: 'inline-block',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    backgroundColor: 'rgba(101, 183, 187, 0.12)',
+                    color: 'var(--c-aqua-dark)'
+                  }}>
+                    {categories.find(c => c.id === product.category)?.name || product.category}
+                  </span>
+                </td>
                 <td>{product.price.toFixed(2)} JD</td>
                 <td>{product.featured ? 'Yes' : 'No'}</td>
                 <td>
@@ -174,8 +187,16 @@ export const ProductsManager: React.FC = () => {
                 <div className="form-group">
                   <label>Category</label>
                   <select name="category" className="form-control" value={formData.category} onChange={handleChange}>
-                    <option value="pudding">Pudding</option>
-                    <option value="granola">Granola</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                    {formData.category && !categories.some((c) => c.id === formData.category) && (
+                      <option value={formData.category}>
+                        {formData.category} (Custom)
+                      </option>
+                    )}
                   </select>
                 </div>
 

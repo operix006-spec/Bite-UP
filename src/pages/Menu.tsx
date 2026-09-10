@@ -5,11 +5,11 @@ import { useAdmin } from '../context/AdminContext';
 import { useCart } from '../context/CartContext';
 import './Menu.css';
 
-type Category = 'all' | 'pudding' | 'granola';
+type Category = string;
 
 export const Menu: React.FC = () => {
   const { addItem, isCartOpen, itemCount, cartTotal, openCart } = useCart();
-  const { products } = useAdmin();
+  const { products, categories } = useAdmin();
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [modalQuantity, setModalQuantity] = useState(1);
@@ -22,6 +22,12 @@ export const Menu: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (activeCategory !== 'all' && !categories.some(c => c.id === activeCategory)) {
+      setActiveCategory('all');
+    }
+  }, [categories, activeCategory]);
 
   const filteredProducts = products.filter(
     (p) => activeCategory === 'all' || p.category === activeCategory
@@ -77,18 +83,18 @@ export const Menu: React.FC = () => {
           >
             ALL ITEMS ({products.length})
           </button>
-          <button 
-            className={`menu-tab-btn ${activeCategory === 'pudding' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('pudding')}
-          >
-            PROTEIN PUDDINGS ({products.filter(p => p.category === 'pudding').length})
-          </button>
-          <button 
-            className={`menu-tab-btn ${activeCategory === 'granola' ? 'active' : ''}`}
-            onClick={() => setActiveCategory('granola')}
-          >
-            CRUNCHY GRANOLAS ({products.filter(p => p.category === 'granola').length})
-          </button>
+          {categories.map((cat) => {
+            const count = products.filter((p) => p.category === cat.id).length;
+            return (
+              <button 
+                key={cat.id}
+                className={`menu-tab-btn ${activeCategory === cat.id ? 'active' : ''}`}
+                onClick={() => setActiveCategory(cat.id)}
+              >
+                {cat.name.toUpperCase()} ({count})
+              </button>
+            );
+          })}
         </div>
 
         {/* REFINED PRODUCT GRID */}
@@ -147,7 +153,9 @@ export const Menu: React.FC = () => {
                 <img src={selectedProduct.image} alt={selectedProduct.name} />
               </div>
               <div className="modal-details">
-                <span className="modal-eyebrow">{(selectedProduct.category || '').toUpperCase()}</span>
+                <span className="modal-eyebrow">
+                  {(categories.find(c => c.id === selectedProduct.category)?.name || selectedProduct.category || '').toUpperCase()}
+                </span>
                 <h2 className="modal-title">{selectedProduct.name}</h2>
                 <div className="modal-price">{(Number(selectedProduct.price) || 0).toFixed(2)} JD</div>
                 

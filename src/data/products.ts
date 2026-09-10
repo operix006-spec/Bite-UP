@@ -1,7 +1,7 @@
 export interface Product {
   id: string;
   name: string;
-  category: 'pudding' | 'granola';
+  category: string;
   price: number;
   calories: number;
   protein: number;
