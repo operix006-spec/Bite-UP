@@ -85,6 +85,7 @@ export interface SiteContent {
   chatbotKnowledgeBase?: string;
   chatbotQuickSuggestions?: string;
   menuCategories?: string;
+  retailAreas?: string;
 }
 
 export interface MenuCategory {
@@ -95,6 +96,18 @@ export interface MenuCategory {
 export const defaultMenuCategories: MenuCategory[] = [
   { id: 'pudding', name: 'PROTEIN PUDDINGS' },
   { id: 'granola', name: 'CRUNCHY GRANOLAS' }
+];
+
+export const defaultRetailAreas: string[] = [
+  'Marj Al Hamam',
+  'Al Jubeiha',
+  'Dahiyat Al Rashid',
+  'Sweileh',
+  'Abu Nsair',
+  'Tabarbour',
+  'Wadi Saqra',
+  'Shmeisani',
+  'Khalda'
 ];
 
 export const defaultContent: SiteContent = {
@@ -361,4 +374,5 @@ export const defaultContent: SiteContent = {
     { id: 's5', label: 'Delivery & Storage Guide', prompt: 'How should I store BITE UP cups and how does delivery work in Amman?' }
   ]),
   menuCategories: JSON.stringify(defaultMenuCategories),
+  retailAreas: JSON.stringify(defaultRetailAreas),
 };

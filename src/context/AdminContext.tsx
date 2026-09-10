@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { products as initialProducts } from '../data/products';
 import type { Product } from '../data/products';
-import { defaultContent, defaultMenuCategories } from '../data/defaultContent';
+import { defaultContent, defaultMenuCategories, defaultRetailAreas } from '../data/defaultContent';
 import type { SiteContent, MenuCategory } from '../data/defaultContent';
 import { locations as initialLocations } from '../data/locations';
 import type { Location } from '../data/locations';
@@ -12,6 +12,7 @@ interface AdminContextType {
   siteContent: SiteContent;
   locations: Location[];
   categories: MenuCategory[];
+  areas: string[];
   loading: boolean;
   updateProduct: (product: Product) => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
@@ -22,6 +23,9 @@ interface AdminContextType {
   updateCategory: (oldId: string, updated: MenuCategory) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   reorderCategories: (categories: MenuCategory[]) => Promise<void>;
+  addArea: (areaName: string) => Promise<void>;
+  updateArea: (oldName: string, newName: string) => Promise<void>;
+  deleteArea: (areaName: string) => Promise<void>;
   addLocation: (loc: Location) => Promise<void>;
   updateLocation: (loc: Location) => Promise<void>;
   deleteLocation: (id: string) => Promise<void>;
@@ -84,6 +88,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }
   if (!initialContentData.menuCategories) {
     initialContentData.menuCategories = defaultContent.menuCategories;
+  }
+  if (!initialContentData.retailAreas) {
+    initialContentData.retailAreas = defaultContent.retailAreas;
   }
 
   const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
@@ -210,6 +217,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         if (!safeContent.menuCategories) {
           safeContent.menuCategories = defaultContent.menuCategories;
+        }
+        if (!safeContent.retailAreas) {
+          safeContent.retailAreas = defaultContent.retailAreas;
         }
 
         setProducts(safeProducts as Product[]);
@@ -420,6 +430,62 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  const areas: string[] = React.useMemo(() => {
+    try {
+      if (siteContent.retailAreas) {
+        const parsed = JSON.parse(siteContent.retailAreas);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing retailAreas:', e);
+    }
+    return defaultRetailAreas;
+  }, [siteContent.retailAreas]);
+
+  const addArea = async (areaName: string) => {
+    try {
+      const trimmed = areaName.trim();
+      if (!trimmed || areas.includes(trimmed)) return;
+      const nextAreas = [...areas, trimmed];
+      const newContent = { ...siteContent, retailAreas: JSON.stringify(nextAreas) };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateArea = async (oldName: string, newName: string) => {
+    try {
+      const trimmed = newName.trim();
+      if (!trimmed || oldName === trimmed) return;
+      const nextAreas = areas.map(a => a === oldName ? trimmed : a);
+      const newContent = { ...siteContent, retailAreas: JSON.stringify(nextAreas) };
+      await updateSiteContent(newContent);
+
+      const updatedLocations = locations.map(l => l.area === oldName ? { ...l, area: trimmed } : l);
+      setLocations(updatedLocations);
+      try {
+        await supabase.from('locations').update({ area: trimmed }).eq('area', oldName);
+      } catch (err) {
+        console.error('Failed to cascade area update to locations in Supabase:', err);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const deleteArea = async (areaName: string) => {
+    try {
+      const nextAreas = areas.filter(a => a !== areaName);
+      const newContent = { ...siteContent, retailAreas: JSON.stringify(nextAreas) };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const resetToDefaults = async () => {
     try {
       setLoading(true);
@@ -446,6 +512,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         siteContent,
         locations,
         categories,
+        areas,
         loading,
         updateProduct,
         addProduct,
@@ -456,6 +523,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateCategory,
         deleteCategory,
         reorderCategories,
+        addArea,
+        updateArea,
+        deleteArea,
         addLocation,
         updateLocation,
         deleteLocation,
