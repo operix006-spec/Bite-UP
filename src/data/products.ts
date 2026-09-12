@@ -33,7 +33,6 @@ export const products: Product[] = [
     fat: 3,
     sugarNote: 'No Added Sugar',
     image: IMG_CHOCOLATE,
-    featured: true,
     nutritionFeatured: true,
     nutritionTabName: 'Brownie'
   },
@@ -190,8 +189,7 @@ export const products: Product[] = [
     carbs: 27,
     fat: 7,
     sugarNote: 'Natural sugar only from ingredients',
-    image: IMG_NUTS,
-    featured: true
+    image: IMG_NUTS
   },
   // SANDWICHES (All 3.50 JD)
   {

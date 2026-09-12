@@ -62,6 +62,16 @@ export const ProductsManager: React.FC = () => {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (formData.featured) {
+      const currentFeaturedCount = products.filter(
+        (p) => p.featured && p.id !== formData.id
+      ).length;
+      if (currentFeaturedCount >= 4) {
+        alert('You can only feature a maximum of 4 items on the Home Page (Featured Menu). Please uncheck another item first.');
+        return;
+      }
+    }
+
     if (formData.nutritionFeatured) {
       const currentFeaturedCount = products.filter(
         (p) => p.nutritionFeatured && p.id !== formData.id
@@ -105,9 +115,31 @@ export const ProductsManager: React.FC = () => {
   return (
     <div className="manager-section">
       <h2>Products Management</h2>
-      <button className="btn-add-product" onClick={() => handleOpenModal()}>
-        + ADD NEW PRODUCT
-      </button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+        <button className="btn-add-product" onClick={() => handleOpenModal()}>
+          + ADD NEW PRODUCT
+        </button>
+        <div style={{ display: 'flex', gap: '10px', fontSize: '0.85rem' }}>
+          <span style={{
+            padding: '6px 12px',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(101, 183, 187, 0.15)',
+            color: 'var(--c-aqua-dark, #357F83)',
+            fontWeight: 700
+          }}>
+            ⭐ Home Featured: {products.filter(p => p.featured).length} / 4 items
+          </span>
+          <span style={{
+            padding: '6px 12px',
+            borderRadius: '8px',
+            backgroundColor: 'rgba(0, 0, 0, 0.05)',
+            color: '#555',
+            fontWeight: 700
+          }}>
+            🎯 Nutrition Spotlight: {products.filter(p => p.nutritionFeatured).length} / 6 items
+          </span>
+        </div>
+      </div>
 
       <div className="products-table-wrapper">
         <table className="products-table">
@@ -118,7 +150,7 @@ export const ProductsManager: React.FC = () => {
               <th>Name</th>
               <th>Category</th>
               <th>Price</th>
-              <th>Featured</th>
+              <th>Featured on Home</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -147,7 +179,23 @@ export const ProductsManager: React.FC = () => {
                   </span>
                 </td>
                 <td>{product.price.toFixed(2)} JD</td>
-                <td>{product.featured ? 'Yes' : 'No'}</td>
+                <td>
+                  {product.featured ? (
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      backgroundColor: '#E6F4F5',
+                      color: 'var(--c-aqua-dark, #357F83)'
+                    }}>
+                      ✓ Home (Featured)
+                    </span>
+                  ) : (
+                    <span style={{ color: '#aaa', fontSize: '0.85rem' }}>—</span>
+                  )}
+                </td>
                 <td>
                   <div className="action-btns">
                     <button className="btn-edit" onClick={() => handleOpenModal(product)}>EDIT</button>
@@ -239,7 +287,7 @@ export const ProductsManager: React.FC = () => {
 
               <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <input type="checkbox" id="featured" name="featured" checked={formData.featured || false} onChange={handleChange} />
-                <label htmlFor="featured" style={{ margin: 0, cursor: 'pointer' }}>Show on Home Page (Featured Menu)</label>
+                <label htmlFor="featured" style={{ margin: 0, cursor: 'pointer', fontWeight: 600 }}>Show on Home Page (Featured Menu - Max 4 items)</label>
               </div>
 
               <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>

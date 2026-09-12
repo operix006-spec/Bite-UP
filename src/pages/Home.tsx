@@ -11,10 +11,11 @@ export const Home: React.FC = () => {
   const { addItem } = useCart();
   const { products, siteContent, locations, categories } = useAdmin();
 
-  // 02. Featured Products: exactly 4 items
-  const featuredIds = ['p-brownie', 'p-cookies', 'p-bounty', 'p-lotus'];
-  const matchedFeatured = products.filter(p => featuredIds.includes(p.id));
-  const featuredProducts = matchedFeatured.length > 0 ? matchedFeatured : products.slice(0, 4);
+  // 02. Featured Products: items marked as featured from the Admin panel (up to 4 items)
+  const markedFeatured = products.filter(p => p.featured);
+  const featuredProducts = markedFeatured.length > 0 
+    ? markedFeatured.slice(0, 4) 
+    : products.slice(0, 4);
 
   // Quick View Modal State
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);

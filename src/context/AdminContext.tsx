@@ -36,7 +36,7 @@ interface AdminContextType {
 }
 
 const CACHE_KEYS = {
-  products: 'biteup_products_cache_v3',
+  products: 'biteup_products_cache_v4',
   content: 'biteup_content_cache_v3',
   locations: 'biteup_locations_cache_v2'
 };
