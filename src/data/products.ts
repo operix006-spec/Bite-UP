@@ -18,6 +18,7 @@ export interface Product {
 const IMG_CHOCOLATE = '/images/product-chocolate.jpg';
 const IMG_NUTS = '/images/product-nuts.jpg';
 const IMG_PINEAPPLE = '/images/product-pineapple.jpg';
+const IMG_SANDWICH = '/images/sandwich-default.jpg';
 
 export const products: Product[] = [
   // PUDDINGS (All 1.75 JD)
@@ -191,5 +192,92 @@ export const products: Product[] = [
     sugarNote: 'Natural sugar only from ingredients',
     image: IMG_NUTS,
     featured: true
+  },
+  // SANDWICHES (All 3.50 JD)
+  {
+    id: 's-zinger',
+    name: 'Zinger Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'دجاج مقرمش صحي، خس، صوص زنجر حار، خضار طازجة',
+    image: IMG_SANDWICH,
+    featured: true
+  },
+  {
+    id: 's-smoky',
+    name: 'Smoky Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'دجاج مشوي، خس، صوص مدخن سبيشال (Smoky Sauce)، خضار طازجة',
+    image: IMG_SANDWICH,
+    featured: true
+  },
+  {
+    id: 's-fajita',
+    name: 'Fajita Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'ستربس دجاج فاهيتا متبل، فلفل وبصل مشوي، خس، صوص فاهيتا مكسيكي',
+    image: IMG_SANDWICH
+  },
+  {
+    id: 's-dynamite',
+    name: 'Dynamite Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'دجاج تندر صحي، خس، صوص داينمايت حار ومميز، خضار طازجة',
+    image: IMG_SANDWICH
+  },
+  {
+    id: 's-turkey',
+    name: 'Turkey Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'شرائح صدر تيركي مدخن فاخر، خس، صوص خردل ومايونيز لايت، خضار',
+    image: IMG_SANDWICH
+  },
+  {
+    id: 's-roastbeef',
+    name: 'Roast Beef Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'شرائح روست بيف بقري مشوي، خس، صوص بيبر خفيف، طماطم ومخلل',
+    image: IMG_SANDWICH
+  },
+  {
+    id: 's-halloumi',
+    name: 'Halloumi Sandwich',
+    category: 'sandwiches',
+    price: 3.50,
+    calories: 430,
+    protein: 44,
+    carbs: 30,
+    fat: 10,
+    sugarNote: 'جبنة حلوم مشوية قليلة الدسم، خس، نعناع طازج، طماطم وخيار، صوص أعشاب',
+    image: IMG_SANDWICH
   }
 ];

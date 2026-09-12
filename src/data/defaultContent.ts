@@ -95,7 +95,8 @@ export interface MenuCategory {
 
 export const defaultMenuCategories: MenuCategory[] = [
   { id: 'pudding', name: 'PROTEIN PUDDINGS' },
-  { id: 'granola', name: 'CRUNCHY GRANOLAS' }
+  { id: 'granola', name: 'CRUNCHY GRANOLAS' },
+  { id: 'sandwiches', name: 'PROTEIN SANDWICHES' }
 ];
 
 export const defaultRetailAreas: string[] = [
