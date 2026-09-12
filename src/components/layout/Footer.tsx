@@ -40,7 +40,7 @@ export const Footer: React.FC = () => {
             <p className="footer-copyright">&copy; {new Date().getFullYear()} BITE UP. All rights reserved.</p>
             <span className="footer-bottom-sep">·</span>
             <a 
-              href="https://www.instagram.com/operixsys/" 
+              href="https://www.operixsys.online/" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="operix-credit-badge"
