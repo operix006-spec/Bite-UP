@@ -12,12 +12,34 @@ import './Admin.css';
 type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
 
 export const Admin: React.FC = () => {
-  const { isAuthenticated, logout } = useAdmin();
+  const { isAuthenticated, logout, isLoadedFromCloud } = useAdmin();
   const [activeTab, setActiveTab] = useState<Tab>('products');
 
   // If user is not authenticated, render the dedicated login screen
   if (!isAuthenticated) {
     return <AdminLogin />;
+  }
+
+  // Ensure live cloud data is synced before rendering dashboard forms to prevent stale flash
+  if (!isLoadedFromCloud) {
+    return (
+      <div className="admin-page" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '38px',
+            height: '38px',
+            border: '3px solid rgba(101, 183, 187, 0.2)',
+            borderTop: '3px solid var(--c-aqua-dark, #357F83)',
+            borderRadius: '50%',
+            animation: 'adminSyncSpin 0.7s linear infinite'
+          }} />
+          <p style={{ color: 'var(--c-dark, #111414)', fontWeight: 700, fontSize: '0.9rem' }}>
+            جاري مزامنة لوحة التحكم بأحدث البيانات...
+          </p>
+          <style>{`@keyframes adminSyncSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
   }
 
   return (

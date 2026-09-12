@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import type { SiteContent } from '../../data/defaultContent';
 import { ImageUpload } from './ImageUpload';
@@ -7,6 +7,10 @@ export const HomeManager: React.FC = () => {
   const { siteContent, updateSiteContent } = useAdmin();
   const [formData, setFormData] = useState<SiteContent>(siteContent);
   const [saveStatus, setSaveStatus] = useState<string>('');
+
+  useEffect(() => {
+    setFormData(siteContent);
+  }, [siteContent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

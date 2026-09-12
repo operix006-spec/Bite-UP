@@ -14,6 +14,7 @@ interface AdminContextType {
   categories: MenuCategory[];
   areas: string[];
   loading: boolean;
+  isLoadedFromCloud: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
@@ -104,6 +105,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // If we already have cached edits, show them instantly (loading = false).
   // If first visit without cache, show brief loading until Supabase completes (loading = true).
   const [loading, setLoading] = useState(!hasCachedData);
+  const [isLoadedFromCloud, setIsLoadedFromCloud] = useState(false);
 
   // Synchronized state setters that persist to localStorage
   const setProducts: React.Dispatch<React.SetStateAction<Product[]>> = (val) => {
@@ -242,6 +244,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } finally {
       setLoading(false);
+      setIsLoadedFromCloud(true);
     }
   };
 
@@ -595,6 +598,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         categories,
         areas,
         loading,
+        isLoadedFromCloud,
         isAuthenticated,
         login,
         logout,

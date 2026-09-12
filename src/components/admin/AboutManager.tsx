@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import type { SiteContent } from '../../data/defaultContent';
 import type { Location } from '../../data/locations';
@@ -21,6 +21,10 @@ export const AboutManager: React.FC = () => {
   // Content State
   const [formData, setFormData] = useState<SiteContent>(siteContent);
   const [saveStatus, setSaveStatus] = useState<string>('');
+
+  useEffect(() => {
+    setFormData(siteContent);
+  }, [siteContent]);
 
   // Areas State
   const [isAreaModalOpen, setIsAreaModalOpen] = useState(false);
