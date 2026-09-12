@@ -47,7 +47,6 @@ export const products: Product[] = [
     fat: 3,
     sugarNote: 'No Added Sugar',
     image: IMG_CHOCOLATE,
-    featured: true,
     nutritionFeatured: true,
     nutritionTabName: 'Cookies'
   },
@@ -139,7 +138,8 @@ export const products: Product[] = [
     carbs: 27,
     fat: 3,
     sugarNote: 'No Added Sugar',
-    image: IMG_NUTS
+    image: IMG_NUTS,
+    featured: true
   },
   {
     id: 'p-kinder',
@@ -215,8 +215,7 @@ export const products: Product[] = [
     carbs: 30,
     fat: 10,
     sugarNote: 'دجاج مشوي، خس، صوص مدخن سبيشال (Smoky Sauce)، خضار طازجة',
-    image: IMG_SANDWICH,
-    featured: true
+    image: IMG_SANDWICH
   },
   {
     id: 's-fajita',
@@ -264,7 +263,8 @@ export const products: Product[] = [
     carbs: 30,
     fat: 10,
     sugarNote: 'شرائح روست بيف بقري مشوي، خس، صوص بيبر خفيف، طماطم ومخلل',
-    image: IMG_SANDWICH
+    image: IMG_SANDWICH,
+    featured: true
   },
   {
     id: 's-halloumi',

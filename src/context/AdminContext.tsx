@@ -102,9 +102,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [products, setProductsState] = useState<Product[]>(cachedProds.data);
   const [siteContent, setSiteContentState] = useState<SiteContent>(initialContentData);
   const [locations, setLocationsState] = useState<Location[]>(cachedLocs.data);
-  // If we already have cached edits, show them instantly (loading = false).
-  // If first visit without cache, show brief loading until Supabase completes (loading = true).
-  const [loading, setLoading] = useState(!hasCachedData);
+  // Always show clean loader on initial visit / refresh until fresh Supabase data arrives
+  // This fundamentally eliminates any flash of old/stale images and data
+  const [loading, setLoading] = useState(true);
   const [isLoadedFromCloud, setIsLoadedFromCloud] = useState(false);
 
   // Synchronized state setters that persist to localStorage
@@ -133,10 +133,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   useEffect(() => {
-    // Safety timeout: on first visit without cache, allow sufficient time (7s) for Supabase to deliver fresh data over mobile networks
+    // Safety timeout in case network drops or takes too long
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, hasCachedData ? 1500 : 7000);
+      setIsLoadedFromCloud(true);
+    }, 4500);
 
     fetchData();
 
