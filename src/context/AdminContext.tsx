@@ -14,6 +14,10 @@ interface AdminContextType {
   categories: MenuCategory[];
   areas: string[];
   loading: boolean;
+  isAuthenticated: boolean;
+  login: (username: string, password: string, rememberMe?: boolean) => { success: boolean; error?: string };
+  logout: () => void;
+  updateCredentials: (newUsername: string, newPassword: string) => Promise<void>;
   updateProduct: (product: Product) => Promise<void>;
   addProduct: (product: Product) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
@@ -35,7 +39,8 @@ interface AdminContextType {
 const CACHE_KEYS = {
   products: 'biteup_products_cache_v2',
   content: 'biteup_content_cache_v2',
-  locations: 'biteup_locations_cache_v2'
+  locations: 'biteup_locations_cache_v2',
+  auth: 'biteup_admin_auth_token_v1'
 };
 
 const getCached = <T,>(key: string, fallback: T): { data: T; hasCache: boolean } => {
@@ -91,6 +96,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }
   if (!initialContentData.retailAreas) {
     initialContentData.retailAreas = defaultContent.retailAreas;
+  }
+  if (!initialContentData.adminUsername) {
+    initialContentData.adminUsername = defaultContent.adminUsername;
+  }
+  if (!initialContentData.adminPassword) {
+    initialContentData.adminPassword = defaultContent.adminPassword;
   }
 
   const hasCachedData = cachedProds.hasCache || cachedContent.hasCache || cachedLocs.hasCache;
@@ -224,6 +235,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
         if (!safeContent.retailAreas) {
           safeContent.retailAreas = defaultContent.retailAreas;
+        }
+        if (!safeContent.adminUsername) {
+          safeContent.adminUsername = defaultContent.adminUsername;
+        }
+        if (!safeContent.adminPassword) {
+          safeContent.adminPassword = defaultContent.adminPassword;
         }
 
         setProducts(safeProducts as Product[]);
@@ -525,6 +542,68 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  // Check auth session initially from localStorage (if rememberMe) or sessionStorage
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      const localToken = localStorage.getItem(CACHE_KEYS.auth);
+      const sessionToken = sessionStorage.getItem(CACHE_KEYS.auth);
+      return !!(localToken || sessionToken);
+    } catch {
+      return false;
+    }
+  });
+
+  const login = (inputUser: string, inputPass: string, rememberMe = true) => {
+    const validUser = (siteContent.adminUsername || defaultContent.adminUsername || 'admin').trim();
+    const validPass = (siteContent.adminPassword || defaultContent.adminPassword || 'biteup2026').trim();
+
+    if (inputUser.trim().toLowerCase() === validUser.toLowerCase() && inputPass.trim() === validPass) {
+      setIsAuthenticated(true);
+      const token = `auth_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      try {
+        if (rememberMe) {
+          localStorage.setItem(CACHE_KEYS.auth, token);
+          sessionStorage.removeItem(CACHE_KEYS.auth);
+        } else {
+          sessionStorage.setItem(CACHE_KEYS.auth, token);
+          localStorage.removeItem(CACHE_KEYS.auth);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      return { success: true };
+    }
+    return { success: false, error: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    try {
+      localStorage.removeItem(CACHE_KEYS.auth);
+      sessionStorage.removeItem(CACHE_KEYS.auth);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateCredentials = async (newUsername: string, newPassword: string) => {
+    try {
+      const trimmedUser = newUsername.trim();
+      const trimmedPass = newPassword.trim();
+      if (!trimmedUser || !trimmedPass) return;
+
+      const newContent = {
+        ...siteContent,
+        adminUsername: trimmedUser,
+        adminPassword: trimmedPass
+      };
+      await updateSiteContent(newContent);
+    } catch (e) {
+      console.error('Error updating credentials:', e);
+      throw e;
+    }
+  };
+
   return (
     <AdminContext.Provider
       value={{
@@ -534,6 +613,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         categories,
         areas,
         loading,
+        isAuthenticated,
+        login,
+        logout,
+        updateCredentials,
         updateProduct,
         addProduct,
         deleteProduct,

@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
+import { useAdmin } from '../context/AdminContext';
 import { ProductsManager } from '../components/admin/ProductsManager';
 import { CategoriesManager } from '../components/admin/CategoriesManager';
 import { HomeManager } from '../components/admin/HomeManager';
 import { AboutManager } from '../components/admin/AboutManager';
 import { ChatbotManager } from '../components/admin/ChatbotManager';
+import { AdminLogin } from '../components/admin/AdminLogin';
+import { AdminSecurityModal } from '../components/admin/AdminSecurityModal';
+import { ShieldCheck, LogOut } from 'lucide-react';
 import './Admin.css';
 
 type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
 
 export const Admin: React.FC = () => {
+  const { isAuthenticated, logout } = useAdmin();
   const [activeTab, setActiveTab] = useState<Tab>('products');
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+
+  // If user is not authenticated, render the dedicated login screen
+  if (!isAuthenticated) {
+    return <AdminLogin />;
+  }
 
   return (
     <div className="admin-page">
@@ -18,6 +29,26 @@ export const Admin: React.FC = () => {
           <div>
             <h1>Control Panel</h1>
             <p className="admin-subtitle">Manage Menu Products, Website Copy, and AI Assistant Training</p>
+          </div>
+          <div className="admin-header-actions">
+            <button
+              type="button"
+              className="btn-admin-header-action"
+              onClick={() => setIsSecurityModalOpen(true)}
+              title="Change Admin Password and Username"
+            >
+              <ShieldCheck size={16} />
+              <span>SECURITY & PASSWORD</span>
+            </button>
+            <button
+              type="button"
+              className="btn-admin-header-action btn-logout"
+              onClick={logout}
+              title="Sign out of Admin Dashboard"
+            >
+              <LogOut size={16} />
+              <span>LOGOUT</span>
+            </button>
           </div>
         </header>
 
@@ -62,6 +93,12 @@ export const Admin: React.FC = () => {
           {activeTab === 'chatbot' && <ChatbotManager />}
         </div>
       </div>
+
+      <AdminSecurityModal
+        isOpen={isSecurityModalOpen}
+        onClose={() => setIsSecurityModalOpen(false)}
+      />
     </div>
   );
 };
+
