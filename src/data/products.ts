@@ -201,7 +201,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'دجاج مقرمش صحي، خس، صوص زنجر حار، خضار طازجة',
+    sugarNote: 'Crispy healthy chicken, lettuce, spicy zinger sauce, fresh vegetables',
     image: IMG_SANDWICH,
     featured: true
   },
@@ -214,7 +214,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'دجاج مشوي، خس، صوص مدخن سبيشال (Smoky Sauce)، خضار طازجة',
+    sugarNote: 'Grilled chicken, lettuce, signature smoky sauce, fresh vegetables',
     image: IMG_SANDWICH
   },
   {
@@ -226,7 +226,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'ستربس دجاج فاهيتا متبل، فلفل وبصل مشوي، خس، صوص فاهيتا مكسيكي',
+    sugarNote: 'Seasoned chicken fajita strips, grilled peppers & onions, lettuce, Mexican fajita sauce',
     image: IMG_SANDWICH
   },
   {
@@ -238,7 +238,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'دجاج تندر صحي، خس، صوص داينمايت حار ومميز، خضار طازجة',
+    sugarNote: 'Tender healthy chicken, lettuce, signature spicy dynamite sauce, fresh vegetables',
     image: IMG_SANDWICH
   },
   {
@@ -250,7 +250,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'شرائح صدر تيركي مدخن فاخر، خس، صوص خردل ومايونيز لايت، خضار',
+    sugarNote: 'Premium smoked turkey breast slices, lettuce, light mustard mayo sauce, fresh vegetables',
     image: IMG_SANDWICH
   },
   {
@@ -262,7 +262,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'شرائح روست بيف بقري مشوي، خس، صوص بيبر خفيف، طماطم ومخلل',
+    sugarNote: 'Roasted prime beef slices, lettuce, light pepper sauce, fresh tomatoes & pickles',
     image: IMG_SANDWICH,
     featured: true
   },
@@ -275,7 +275,7 @@ export const products: Product[] = [
     protein: 44,
     carbs: 30,
     fat: 10,
-    sugarNote: 'جبنة حلوم مشوية قليلة الدسم، خس، نعناع طازج، طماطم وخيار، صوص أعشاب',
+    sugarNote: 'Grilled low-fat halloumi cheese, lettuce, fresh mint, cucumber & tomato, herb sauce',
     image: IMG_SANDWICH
   }
 ];

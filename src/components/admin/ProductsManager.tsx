@@ -275,8 +275,8 @@ export const ProductsManager: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <label>Sugar Note</label>
-                <input type="text" name="sugarNote" className="form-control" value={formData.sugarNote || ''} onChange={handleChange} placeholder="e.g. No Added Sugar" />
+                <label>Note</label>
+                <input type="text" name="sugarNote" className="form-control" value={formData.sugarNote || ''} onChange={handleChange} placeholder="e.g. No Added Sugar, Fresh ingredients, etc." />
               </div>
 
               <ImageUpload
