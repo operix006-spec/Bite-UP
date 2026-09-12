@@ -86,8 +86,6 @@ export interface SiteContent {
   chatbotQuickSuggestions?: string;
   menuCategories?: string;
   retailAreas?: string;
-  adminUsername?: string;
-  adminPassword?: string;
 }
 
 export interface MenuCategory {
@@ -377,6 +375,4 @@ export const defaultContent: SiteContent = {
   ]),
   menuCategories: JSON.stringify(defaultMenuCategories),
   retailAreas: JSON.stringify(defaultRetailAreas),
-  adminUsername: 'admin',
-  adminPassword: 'biteup2026',
 };

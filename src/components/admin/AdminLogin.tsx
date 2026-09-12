@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
 import { useAdmin } from '../../context/AdminContext';
-import { Lock, User, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
   const { login } = useAdmin();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
     setIsSubmitting(true);
 
-    const result = login(username, password, rememberMe);
-    if (!result.success) {
-      setErrorMessage(result.error || 'Invalid username or password');
+    try {
+      const result = await login(email, password);
+      if (!result.success) {
+        setErrorMessage(result.error || 'Invalid email or password.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred during login.');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -31,7 +35,7 @@ export const AdminLogin: React.FC = () => {
             <span>UP</span>
           </div>
           <h2>Control Panel</h2>
-          <p>Please enter your credentials to access BITE UP admin settings</p>
+          <p>Please sign in with your Supabase admin credentials</p>
         </div>
 
         {errorMessage && (
@@ -43,18 +47,18 @@ export const AdminLogin: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="admin-login-form">
           <div className="admin-login-field">
-            <label htmlFor="admin-username">Username</label>
+            <label htmlFor="admin-email">Email Address</label>
             <div className="admin-input-group">
-              <User size={18} className="input-icon" />
+              <Mail size={18} className="input-icon" />
               <input
-                id="admin-username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                id="admin-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@biteup.com"
                 required
                 autoFocus
-                autoComplete="username"
+                autoComplete="email"
               />
             </div>
           </div>
@@ -83,23 +87,12 @@ export const AdminLogin: React.FC = () => {
             </div>
           </div>
 
-          <div className="admin-login-options">
-            <label className="remember-checkbox-label">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              <span>Remember me on this device</span>
-            </label>
-          </div>
-
           <button
             type="submit"
             className="btn-admin-login-submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Logging in...' : 'Sign In to Dashboard'}
+            {isSubmitting ? 'Signing In...' : 'Sign In to Dashboard'}
           </button>
         </form>
 
@@ -110,3 +103,4 @@ export const AdminLogin: React.FC = () => {
     </div>
   );
 };
+

@@ -6,8 +6,7 @@ import { HomeManager } from '../components/admin/HomeManager';
 import { AboutManager } from '../components/admin/AboutManager';
 import { ChatbotManager } from '../components/admin/ChatbotManager';
 import { AdminLogin } from '../components/admin/AdminLogin';
-import { AdminSecurityModal } from '../components/admin/AdminSecurityModal';
-import { ShieldCheck, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import './Admin.css';
 
 type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
@@ -15,7 +14,6 @@ type Tab = 'products' | 'categories' | 'home' | 'about' | 'chatbot';
 export const Admin: React.FC = () => {
   const { isAuthenticated, logout } = useAdmin();
   const [activeTab, setActiveTab] = useState<Tab>('products');
-  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
   // If user is not authenticated, render the dedicated login screen
   if (!isAuthenticated) {
@@ -31,15 +29,6 @@ export const Admin: React.FC = () => {
             <p className="admin-subtitle">Manage Menu Products, Website Copy, and AI Assistant Training</p>
           </div>
           <div className="admin-header-actions">
-            <button
-              type="button"
-              className="btn-admin-header-action"
-              onClick={() => setIsSecurityModalOpen(true)}
-              title="Change Admin Password and Username"
-            >
-              <ShieldCheck size={16} />
-              <span>SECURITY & PASSWORD</span>
-            </button>
             <button
               type="button"
               className="btn-admin-header-action btn-logout"
@@ -93,11 +82,6 @@ export const Admin: React.FC = () => {
           {activeTab === 'chatbot' && <ChatbotManager />}
         </div>
       </div>
-
-      <AdminSecurityModal
-        isOpen={isSecurityModalOpen}
-        onClose={() => setIsSecurityModalOpen(false)}
-      />
     </div>
   );
 };
