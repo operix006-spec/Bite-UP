@@ -187,7 +187,7 @@ export const Home: React.FC = () => {
                 </div>
                 <h3 className="home-loc-name">{loc.name}</h3>
                 <a
-                  href={loc.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ' ' + loc.area + ' Amman')}`}
+                  href={loc.mapUrl ? (loc.mapUrl.startsWith('http') ? loc.mapUrl : `https://${loc.mapUrl}`) : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name + ' ' + loc.area + ' Amman')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="home-loc-action"

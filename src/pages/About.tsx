@@ -180,7 +180,7 @@ export const About: React.FC = () => {
                               )}
                             </div>
                             <a
-                              href={spot.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.area + ' Amman')}`}
+                              href={spot.mapUrl ? (spot.mapUrl.startsWith('http') ? spot.mapUrl : `https://${spot.mapUrl}`) : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.area + ' Amman')}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="spot-map-action"
