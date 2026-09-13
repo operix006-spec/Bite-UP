@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ExternalLink, MapPin, ChevronDown } from 'lucide-react';
 import type { Location } from '../data/locations';
 import { useAdmin } from '../context/AdminContext';
+import { SEO } from '../components/common/SEO';
 import './About.css';
 
 export const About: React.FC = () => {
@@ -38,6 +39,29 @@ export const About: React.FC = () => {
 
   return (
     <div className="about-page">
+      <SEO
+        title="About BITE UP | Healthy Desserts & Retail Locations in Amman"
+        description="The story of BITE UP: craft high-protein treats in Amman, Jordan. Our nutrition values and where to find our puddings and desserts across retail spots."
+        canonicalUrl="https://www.biteup.online/about"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.biteup.online/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "About",
+              "item": "https://www.biteup.online/about"
+            }
+          ]
+        }}
+      />
       {/* 1. EDITORIAL HERO */}
       <section className="about-hero bg-aqua">
         <div className="container about-hero-container">
@@ -80,7 +104,11 @@ export const About: React.FC = () => {
 
             <div className="story-right-col">
               <div className="story-image-card">
-                <img src={siteContent.aboutMissionImg} alt="BITE UP Chocolate Protein Pudding" />
+                <img 
+                  src={siteContent.aboutMissionImg} 
+                  alt="BITE UP Chocolate Protein Pudding - Amman" 
+                  loading="lazy" 
+                />
                 <div className="story-image-caption">
                   <span>{siteContent.aboutMissionImageCaption}</span>
                 </div>

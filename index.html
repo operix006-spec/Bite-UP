@@ -13,6 +13,12 @@
     <title>BITE UP | Healthy Desserts & Protein Puddings</title>
     <meta name="description" content="Guilt-free protein treats, craft puddings, and crunchy granolas made fresh in Amman, Jordan." />
     
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Preconnect for performance & font rendering -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
     <link rel="canonical" href="https://www.biteup.online/" />
     
     <!-- OpenGraph & Social Preview Thumbnails (Absolute URLs required by Search Engines) -->
@@ -28,22 +34,45 @@
     <meta name="twitter:description" content="Guilt-free protein treats, craft puddings, and crunchy granolas made fresh in Amman, Jordan." />
     <meta name="twitter:image" content="https://www.biteup.online/logo.png" />
 
-    <!-- Google Structured Data (Schema.org) for Brand & Logo -->
+    <!-- Google Structured Data (Schema.org) for Brand, Local Business & WebSite -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FoodEstablishment",
-      "name": "BITE UP",
-      "url": "https://www.biteup.online/",
-      "logo": "https://www.biteup.online/logo.png",
-      "image": "https://www.biteup.online/logo.png",
-      "description": "Guilt-free protein treats, craft puddings, and crunchy granolas made fresh in Amman, Jordan.",
-      "telephone": "+962796969230",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Amman",
-        "addressCountry": "JO"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://www.biteup.online/#website",
+          "url": "https://www.biteup.online/",
+          "name": "BITE UP",
+          "description": "Guilt-free protein treats, craft puddings, and crunchy granolas made fresh in Amman, Jordan."
+        },
+        {
+          "@type": ["FoodEstablishment", "Bakery"],
+          "@id": "https://www.biteup.online/#organization",
+          "name": "BITE UP",
+          "url": "https://www.biteup.online/",
+          "logo": "https://www.biteup.online/logo.png",
+          "image": "https://www.biteup.online/logo.png",
+          "description": "Guilt-free protein treats, craft puddings, and crunchy granolas made fresh in Amman, Jordan.",
+          "telephone": "+962796969230",
+          "priceRange": "$$",
+          "currenciesAccepted": "JOD",
+          "servesCuisine": [
+            "Healthy Desserts",
+            "High-Protein Treats",
+            "Protein Pudding",
+            "Granola"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Amman",
+            "addressCountry": "JO"
+          },
+          "sameAs": [
+            "https://instagram.com/bit.eup"
+          ]
+        }
+      ]
     }
     </script>
   </head>

@@ -5,6 +5,7 @@ import { useAdmin } from '../context/AdminContext';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { InstagramEmbed } from '../components/common/InstagramEmbed';
+import { SEO } from '../components/common/SEO';
 import './Home.css';
 
 export const Home: React.FC = () => {
@@ -57,6 +58,11 @@ export const Home: React.FC = () => {
 
   return (
     <div className="home-page">
+      <SEO
+        title="BITE UP | Healthy Desserts & Protein Puddings in Amman"
+        description="Guilt-free protein treats, craft puddings, and crunchy granolas made fresh daily in Amman, Jordan. High protein, no added sugar."
+        canonicalUrl="https://www.biteup.online/"
+      />
       {/* ===================================================
          01 — HERO: Signature Aqua / Product-Led Campaign
          =================================================== */}
@@ -88,7 +94,7 @@ export const Home: React.FC = () => {
             <div className="hero-image-frame">
               <img
                 src={siteContent.homeHeroImg}
-                alt="BITE UP Protein Pudding & Granola"
+                alt="BITE UP Protein Pudding & Granola - Fresh in Amman"
                 className="hero-product-img"
               />
             </div>
@@ -121,7 +127,11 @@ export const Home: React.FC = () => {
               >
                 <div className="card-image-link">
                   <div className="card-image-frame">
-                    <img src={product.image} alt={product.name} />
+                    <img 
+                      src={product.image} 
+                      alt={`${product.name} - BITE UP Healthy Treat`} 
+                      loading="lazy" 
+                    />
                   </div>
                 </div>
 
@@ -286,7 +296,11 @@ export const Home: React.FC = () => {
             {/* PRODUCT PHOTO SIDE */}
             <div className="spotlight-photo-column">
               <div className="spotlight-photo-frame">
-                <img src={selectedProduct?.image || '/images/products/pudding-brownie.png'} alt={selectedProduct?.name || 'Protein Pudding'} />
+                <img 
+                  src={selectedProduct?.image || '/images/products/pudding-brownie.png'} 
+                  alt={`${selectedProduct?.name || 'Protein Pudding'} - Nutrition Spotlight BITE UP`} 
+                  loading="lazy" 
+                />
               </div>
               <div className="spotlight-product-caption">
                 <h4>{selectedProduct?.name || 'Protein Pudding'}</h4>
@@ -350,8 +364,9 @@ export const Home: React.FC = () => {
           <div className="story-photo-wrapper">
             <img
               src={siteContent.homeStoryImg}
-              alt="BITE UP Brand Campaign in Amman"
+              alt="BITE UP Brand Story - Healthy Treats in Amman, Jordan"
               className="story-campaign-img"
+              loading="lazy"
             />
           </div>
         </div>
@@ -430,7 +445,10 @@ export const Home: React.FC = () => {
 
             <div className="quick-view-content">
               <div className="quick-view-image-box">
-                <img src={quickViewProduct.image} alt={quickViewProduct.name} />
+                <img 
+                  src={quickViewProduct.image} 
+                  alt={`${quickViewProduct.name} - BITE UP Amman`} 
+                />
               </div>
 
               <div className="quick-view-details">

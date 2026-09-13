@@ -3,6 +3,7 @@ import { X, Plus, Minus } from 'lucide-react';
 import type { Product } from '../data/products';
 import { useAdmin } from '../context/AdminContext';
 import { useCart } from '../context/CartContext';
+import { SEO } from '../components/common/SEO';
 import './Menu.css';
 
 type Category = string;
@@ -61,6 +62,29 @@ export const Menu: React.FC = () => {
 
   return (
     <div className="menu-page">
+      <SEO
+        title="Menu | High-Protein Desserts, Puddings & Granola — BITE UP"
+        description="Explore the BITE UP menu in Amman: high-protein puddings, clean granolas, and healthy treats with pure whey isolate and honest macros."
+        canonicalUrl="https://www.biteup.online/menu"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://www.biteup.online/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Menu",
+              "item": "https://www.biteup.online/menu"
+            }
+          ]
+        }}
+      />
       {/* MENU HEADER HERO */}
       <section className="menu-banner bg-aqua">
         <div className="container">
@@ -106,7 +130,11 @@ export const Menu: React.FC = () => {
               onClick={() => handleProductClick(product)}
             >
               <div className="product-visual-frame">
-                <img src={product.image} alt={product.name} />
+                <img 
+                  src={product.image} 
+                  alt={`${product.name} - BITE UP Healthy Treat`} 
+                  loading="lazy" 
+                />
               </div>
 
               <div className="product-card-body">
@@ -150,7 +178,10 @@ export const Menu: React.FC = () => {
             </button>
             <div className="modal-content-scroll">
               <div className="modal-image-container">
-                <img src={selectedProduct.image} alt={selectedProduct.name} />
+                <img 
+                  src={selectedProduct.image} 
+                  alt={`${selectedProduct.name} - BITE UP High-Protein Treat`} 
+                />
               </div>
               <div className="modal-details">
                 <span className="modal-eyebrow">

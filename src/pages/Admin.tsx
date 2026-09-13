@@ -6,6 +6,7 @@ import { HomeManager } from '../components/admin/HomeManager';
 import { AboutManager } from '../components/admin/AboutManager';
 import { ChatbotManager } from '../components/admin/ChatbotManager';
 import { AdminLogin } from '../components/admin/AdminLogin';
+import { SEO } from '../components/common/SEO';
 import { LogOut } from 'lucide-react';
 import './Admin.css';
 
@@ -17,7 +18,17 @@ export const Admin: React.FC = () => {
 
   // If user is not authenticated, render the dedicated login screen
   if (!isAuthenticated) {
-    return <AdminLogin />;
+    return (
+      <>
+        <SEO 
+          title="Admin Login | BITE UP" 
+          description="BITE UP Management Login" 
+          canonicalUrl="https://www.biteup.online/admin" 
+          noIndex={true} 
+        />
+        <AdminLogin />
+      </>
+    );
   }
 
   // Ensure live cloud data is synced before rendering dashboard forms to prevent stale flash
@@ -44,6 +55,12 @@ export const Admin: React.FC = () => {
 
   return (
     <div className="admin-page">
+      <SEO 
+        title="Admin Dashboard | BITE UP" 
+        description="BITE UP Control Panel" 
+        canonicalUrl="https://www.biteup.online/admin" 
+        noIndex={true} 
+      />
       <div className="container admin-container">
         <header className="admin-header">
           <div>
