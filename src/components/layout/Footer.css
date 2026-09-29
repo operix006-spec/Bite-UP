@@ -1,0 +1,220 @@
+.footer {
+  padding: 50px 0 0 0;
+  color: var(--c-white);
+  background-color: var(--c-dark);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding-bottom: 36px;
+}
+
+.footer-brand {
+  max-width: 320px;
+}
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.footer-logo-svg {
+  color: var(--c-aqua-primary);
+}
+
+.footer-brand-text {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--c-white);
+}
+
+.footer-tagline {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-nav-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.footer-inline-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-inline-links a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-inline-links a:hover {
+  color: var(--c-aqua-primary);
+}
+
+.footer-separator {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.footer-bottom .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-bottom-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-right: 140px; /* Safe buffer on desktop for bottom-right floating chat launcher */
+}
+
+.footer-bottom-sep {
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+}
+
+.operix-credit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.operix-label {
+  font-family: var(--font-body);
+  font-size: 0.775rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  transition: color 0.2s ease;
+}
+
+.operix-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 14px;
+  border-radius: 999px;
+  background: #0d1e1f;
+  border: 1px solid rgba(101, 183, 187, 0.45);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.operix-credit-badge:hover .operix-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.operix-credit-badge:hover .operix-pill {
+  background: var(--c-aqua-dark, #357F83);
+  border-color: var(--c-aqua-primary, #65B7BB);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(101, 183, 187, 0.4);
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 32px 0 0 0;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding-bottom: 22px;
+  }
+
+  .footer-brand {
+    max-width: 100%;
+  }
+
+  .footer-logo-wrap {
+    justify-content: center;
+    margin-bottom: 4px;
+    gap: 8px;
+  }
+
+  .footer-brand-text {
+    font-size: 22px;
+  }
+
+  .footer-tagline {
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+
+  .footer-nav-block {
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-inline-links {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .footer-inline-links a {
+    font-size: 13.5px;
+  }
+
+  .footer-bottom {
+    padding: 14px 0 84px 0; /* Safe-area padding to guarantee floating chat widget never obstructs credits or copyright */
+    font-size: 12px;
+  }
+
+  .footer-bottom .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .footer-bottom-meta {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin-top: 4px;
+    padding-right: 0;
+  }
+
+  .footer-bottom-sep {
+    display: none;
+  }
+}
